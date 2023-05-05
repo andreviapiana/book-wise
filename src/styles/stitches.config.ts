@@ -72,10 +72,10 @@ export const { styled, getCssText, globalCss, keyframes } = createStitches({
     },
 
     radii: {
-      xs: '2.5px',
-      sm: '5px',
-      md: '10px',
-      lg: '20px',
+      xs: '2px',
+      sm: '4px',
+      md: '8px',
+      lg: '12px',
       full: '99999px',
     },
 
