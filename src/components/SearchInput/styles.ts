@@ -20,6 +20,7 @@ export const TextInputContainer = styled('div', {
       },
       md: {
         maxWidth: '100%',
+        marginBottom: '$8',
       },
     },
   },

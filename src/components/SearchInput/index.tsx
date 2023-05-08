@@ -1,14 +1,15 @@
-import { ComponentProps, forwardRef, ReactNode } from 'react'
+import { forwardRef, ReactNode } from 'react'
 import { Input, TextInputContainer } from './styles'
 
-export interface SearchInputProps extends ComponentProps<typeof Input> {
+export interface SearchInputProps {
   children: ReactNode
+  size?: 'sm' | 'md'
 }
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ children, ...rest }, ref) => {
+  ({ children, size, ...rest }, ref) => {
     return (
-      <TextInputContainer>
+      <TextInputContainer size={size}>
         <Input ref={ref} {...rest} />
         {children}
       </TextInputContainer>

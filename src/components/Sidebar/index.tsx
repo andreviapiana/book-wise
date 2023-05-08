@@ -35,7 +35,7 @@ export default function Sidebar() {
       />
 
       <TopContainer>
-        <Link href={'/'}>
+        <Link href={'/home'}>
           <Image src={logoImg} alt="" />
         </Link>
 
@@ -49,7 +49,7 @@ export default function Sidebar() {
           </NavButton>
 
           {session === 'authenticated' && (
-            <NavButton href={'/'}>
+            <NavButton href="/profile" active={currentRoute === '/profile'}>
               <User size={24} />
               Perfil
             </NavButton>

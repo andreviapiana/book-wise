@@ -40,8 +40,6 @@ export const InfosWrapper = styled('div', {
   height: '100%',
 
   gap: '$5',
-
-  justifyContent: 'space-between',
 })
 
 export const Infos = styled('div', {
