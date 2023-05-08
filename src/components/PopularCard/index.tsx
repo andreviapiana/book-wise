@@ -1,7 +1,7 @@
-import { Container, Infos, InfosWrapper, Rating, ReadNotice } from './styles'
+import { Container, Infos, InfosWrapper, ReadNotice } from './styles'
 import Image from 'next/image'
 import bookImg from '../../../public/books/Book.png'
-import { Star } from 'phosphor-react'
+import { StarsRating } from '../StarsRating'
 
 interface CardSizeProps {
   size?: 'sm' | 'lg'
@@ -41,13 +41,7 @@ export default function PopularCard({ size, isFinished }: CardSizeProps) {
           <span>George Orwell</span>
         </Infos>
 
-        <Rating>
-          <Star size={16} weight="fill" />
-          <Star size={16} weight="fill" />
-          <Star size={16} weight="fill" />
-          <Star size={16} weight="fill" />
-          <Star size={16} />
-        </Rating>
+        <StarsRating rating={2} />
       </InfosWrapper>
     </Container>
   )

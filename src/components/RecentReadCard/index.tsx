@@ -1,7 +1,7 @@
-import { CardInfos, CardHeader, Container, Infos, Rating } from './styles'
+import { CardInfos, CardHeader, Container, Infos } from './styles'
 import Image from 'next/image'
 import bookImg from '../../../public/books/o-hobbit.png'
-import { Star } from 'phosphor-react'
+import { StarsRating } from '../StarsRating'
 
 export default function RecentReadCard() {
   return (
@@ -19,13 +19,7 @@ export default function RecentReadCard() {
           <Infos>
             <span>Há 2 dias</span>
           </Infos>
-          <Rating>
-            <Star size={16} weight="fill" />
-            <Star size={16} weight="fill" />
-            <Star size={16} weight="fill" />
-            <Star size={16} weight="fill" />
-            <Star size={16} />
-          </Rating>
+          <StarsRating rating={1.5} />
         </CardHeader>
 
         <Infos>

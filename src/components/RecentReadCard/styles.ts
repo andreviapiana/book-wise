@@ -60,16 +60,6 @@ export const Infos = styled('div', {
   },
 })
 
-export const Rating = styled('div', {
-  display: 'flex',
-
-  gap: '$1',
-
-  svg: {
-    color: '$purple100',
-  },
-})
-
 export const ImageWrapper = styled('div', {
   display: 'flex',
   justifyContent: 'center',

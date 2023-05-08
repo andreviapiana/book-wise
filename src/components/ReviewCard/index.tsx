@@ -4,12 +4,11 @@ import {
   ImageWrapper,
   Infos,
   InfosWrapper,
-  Rating,
 } from './styles'
 import Image from 'next/image'
 import bookImg from '../../../public/books/o-hobbit.png'
-import { Star } from 'phosphor-react'
 import userImg from '../../../public/avatar.png'
+import { StarsRating } from '../StarsRating'
 
 export default function ReviewCard() {
   return (
@@ -30,13 +29,7 @@ export default function ReviewCard() {
           <span>Hoje</span>
         </Infos>
 
-        <Rating>
-          <Star size={16} weight="fill" />
-          <Star size={16} weight="fill" />
-          <Star size={16} weight="fill" />
-          <Star size={16} weight="fill" />
-          <Star size={16} />
-        </Rating>
+        <StarsRating />
       </CardHeader>
 
       <InfosWrapper>
