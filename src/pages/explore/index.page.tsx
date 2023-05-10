@@ -13,9 +13,13 @@ import {
   CardsContainer,
 } from './styles'
 
+interface BookWithRating extends Book {
+  rating: number
+}
+
 export interface ExploreProps {
   categories: Category[]
-  books: Book[]
+  books: BookWithRating[]
 }
 
 export default function Explore({ categories, books }: ExploreProps) {
@@ -56,7 +60,7 @@ export default function Explore({ categories, books }: ExploreProps) {
               author={book.author}
               name={book.name}
               cover={book.cover_url}
-              rating={4}
+              rating={book.rating}
             />
           ))}
         </CardsContainer>
@@ -67,13 +71,33 @@ export default function Explore({ categories, books }: ExploreProps) {
 
 export async function getStaticProps() {
   const categories = await prisma.category.findMany()
-  const books = await prisma.book.findMany()
+  const books = await prisma.book.findMany({
+    include: {
+      ratings: {
+        select: {
+          rate: true,
+        },
+      },
+    },
+  })
+
+  const booksWithRating = books.map((book) => {
+    const avgRate =
+      book.ratings.reduce((sum, rateObj) => {
+        return sum + rateObj.rate
+      }, 0) / book.ratings.length
+
+    return {
+      ...book,
+      rating: avgRate,
+    }
+  })
 
   return {
     props: {
       // https://stackoverflow.com/a/72837265/6727029
       categories: JSON.parse(JSON.stringify(categories)),
-      books: JSON.parse(JSON.stringify(books)),
+      books: JSON.parse(JSON.stringify(booksWithRating)),
     },
     revalidate: 60 * 60 * 24 * 1, // 1 day
   }
