@@ -45,6 +45,7 @@ export const CardsContainer = styled('div', {
 
 export const FilterContainer = styled('div', {
   display: 'flex',
+  flexWrap: 'wrap',
 
   maxWidth: '100%',
   marginBottom: '$12',
