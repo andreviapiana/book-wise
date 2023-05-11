@@ -28,6 +28,8 @@ export default function Explore({ categories, books }: ExploreProps) {
   const [booksList, setBooksList] =
     useState<BookWithRatingAndCategories[]>(books)
 
+  const [search, setSearch] = useState('')
+
   const [categorySelected, setCategorySelected] = useState<string | null>(null)
 
   async function selectCategory(categoryId: string | null) {
@@ -39,12 +41,27 @@ export default function Explore({ categories, books }: ExploreProps) {
     setCategorySelected(categoryId)
   }
 
+  const filteredBooks = booksList?.filter((book) => {
+    return (
+      book.name
+        .toLowerCase()
+        .includes(search.toLowerCase().replace(/( )+/g, ' ')) ||
+      book.author
+        .toLowerCase()
+        .includes(search.toLowerCase().replace(/( )+/g, ' '))
+    )
+  })
+
   return (
     <Template>
       <Title>
         <ChartLineUp size={32} />
         <h2>Explorar</h2>
-        <SearchInput placeholder="Buscar livro ou autor">
+        <SearchInput
+          placeholder="Buscar livro ou autor"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        >
           <MagnifyingGlass size={20} />
         </SearchInput>
       </Title>
@@ -69,7 +86,7 @@ export default function Explore({ categories, books }: ExploreProps) {
           ))}
         </FilterContainer>
         <CardsContainer>
-          {booksList.map((book) => (
+          {filteredBooks.map((book) => (
             <PopularCard
               key={book.id}
               size="lg"
