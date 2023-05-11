@@ -13,17 +13,18 @@ import {
   CardsContainer,
 } from './styles'
 
-interface BookWithRating extends Book {
+interface BookWithRatingAndCategories extends Book {
   rating: number
+  categories: Category[]
 }
 
 export interface ExploreProps {
   categories: Category[]
-  books: BookWithRating[]
+  books: BookWithRatingAndCategories[]
 }
 
 export default function Explore({ categories, books }: ExploreProps) {
-  const [activeFilter, setActiveFilter] = useState<string | null>(null)
+  const [categorySelected, setCategorySelected] = useState<string | null>(null)
 
   return (
     <Template>
@@ -38,18 +39,20 @@ export default function Explore({ categories, books }: ExploreProps) {
       <CenterContainer>
         <FilterContainer>
           <ButtonFilter
-            title={'Todos'}
-            selected={activeFilter === null}
-            onClick={() => setActiveFilter(null)}
-          />
+            selected={!categorySelected}
+            onClick={() => setCategorySelected(null)}
+          >
+            Todos
+          </ButtonFilter>
 
           {categories.map((category) => (
             <ButtonFilter
               key={category.id}
-              title={category.name}
-              selected={activeFilter === category.id}
-              onClick={() => setActiveFilter(category.id)}
-            />
+              selected={categorySelected === category.id}
+              onClick={() => setCategorySelected(category.id)}
+            >
+              {category.name}
+            </ButtonFilter>
           ))}
         </FilterContainer>
         <CardsContainer>
@@ -78,10 +81,23 @@ export async function getStaticProps() {
           rate: true,
         },
       },
+      // https://www.prisma.io/docs/guides/database/troubleshooting-orm/help-articles/working-with-many-to-many-relations
+      categories: {
+        include: {
+          category: true,
+        },
+      },
     },
   })
 
-  const booksWithRating = books.map((book) => {
+  const booksFixedRelationWithCategory = books.map((book) => {
+    return {
+      ...book,
+      categories: book.categories.map((category) => category.category),
+    }
+  })
+
+  const booksWithRating = booksFixedRelationWithCategory.map((book) => {
     const avgRate =
       book.ratings.reduce((sum, rateObj) => {
         return sum + rateObj.rate

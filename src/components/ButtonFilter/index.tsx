@@ -1,15 +1,15 @@
-import { ButtonHTMLAttributes } from 'react'
+import { HTMLAttributes, ReactNode } from 'react'
 import { ButtonContainer } from './styles'
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  title: string
+interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
+  children: ReactNode
   selected?: boolean
 }
 
-export function ButtonFilter({ title, selected, ...rest }: ButtonProps) {
+export function ButtonFilter({ children, selected, ...rest }: ButtonProps) {
   return (
     <ButtonContainer selected={selected} {...rest}>
-      {title}
+      {children}
     </ButtonContainer>
   )
 }
