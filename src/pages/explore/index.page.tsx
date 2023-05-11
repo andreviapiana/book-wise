@@ -12,6 +12,7 @@ import {
   FilterContainer,
   CardsContainer,
 } from './styles'
+import { api } from '@/lib/axios'
 
 interface BookWithRatingAndCategories extends Book {
   rating: number
@@ -24,7 +25,19 @@ export interface ExploreProps {
 }
 
 export default function Explore({ categories, books }: ExploreProps) {
+  const [booksList, setBooksList] =
+    useState<BookWithRatingAndCategories[]>(books)
+
   const [categorySelected, setCategorySelected] = useState<string | null>(null)
+
+  async function selectCategory(categoryId: string | null) {
+    const query = categoryId ? `?category=${categoryId}` : ''
+    const response = await api.get(`/books${query}`)
+    if (response.data.booksWithRating) {
+      setBooksList(response.data.booksWithRating)
+    }
+    setCategorySelected(categoryId)
+  }
 
   return (
     <Template>
@@ -40,7 +53,7 @@ export default function Explore({ categories, books }: ExploreProps) {
         <FilterContainer>
           <ButtonFilter
             selected={!categorySelected}
-            onClick={() => setCategorySelected(null)}
+            onClick={() => selectCategory(null)}
           >
             Todos
           </ButtonFilter>
@@ -49,14 +62,14 @@ export default function Explore({ categories, books }: ExploreProps) {
             <ButtonFilter
               key={category.id}
               selected={categorySelected === category.id}
-              onClick={() => setCategorySelected(category.id)}
+              onClick={() => selectCategory(category.id)}
             >
               {category.name}
             </ButtonFilter>
           ))}
         </FilterContainer>
         <CardsContainer>
-          {books.map((book) => (
+          {booksList.map((book) => (
             <PopularCard
               key={book.id}
               size="lg"
