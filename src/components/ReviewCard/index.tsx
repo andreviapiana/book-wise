@@ -8,6 +8,7 @@ import {
 import Image from 'next/image'
 import userImg from '../../../public/avatar.png'
 import { StarsRating } from '../StarsRating'
+import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
 
 import { Book, Rating, User as UserPrisma } from '@prisma/client'
 
@@ -18,6 +19,9 @@ export interface CardProps {
 }
 
 export default function ReviewCard({ user, book, rating }: CardProps) {
+  const { dateFormatted, dateRelativeToNow, dateString } =
+    getDateFormattedAndRelative(rating.created_at)
+
   return (
     <Container>
       <CardHeader>
@@ -33,7 +37,9 @@ export default function ReviewCard({ user, book, rating }: CardProps) {
 
         <Infos>
           <>{user?.name}</>
-          <time>{rating.created_at}</time>
+          <time title={dateFormatted} dateTime={dateString}>
+            {dateRelativeToNow}
+          </time>
         </Infos>
 
         <StarsRating rating={rating.rate} />
