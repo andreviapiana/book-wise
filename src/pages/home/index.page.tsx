@@ -11,8 +11,25 @@ import {
   Subtitle,
   RightContainer,
 } from './styles'
+import { prisma } from '@/lib/prisma'
+import { Book, Category, Rating, User } from '@prisma/client'
 
-export default function Home() {
+interface BookWithRatingAndCategories extends Book {
+  rating: number
+  categories: Category[]
+}
+
+export interface RatingWithUserAndBook extends Rating {
+  user: User
+  book: Book
+}
+
+interface HomeProps {
+  ratings: RatingWithUserAndBook[]
+  books: BookWithRatingAndCategories[]
+}
+
+export default function Home({ ratings, books }: HomeProps) {
   const session = 'authenticated'
 
   return (
@@ -40,9 +57,15 @@ export default function Home() {
           <Subtitle>
             <span>Avaliações mais recentes</span>
           </Subtitle>
-          <ReviewCard />
-          <ReviewCard />
-          <ReviewCard />
+
+          {ratings.map((rating) => (
+            <ReviewCard
+              key={rating.id}
+              book={rating.book}
+              user={rating.user}
+              rating={rating}
+            />
+          ))}
         </CenterContainer>
 
         <RightContainer>
@@ -53,12 +76,82 @@ export default function Home() {
               <CaretRight size={16} />
             </Link>
           </Subtitle>
-          <PopularCard size="sm" />
-          <PopularCard size="sm" isFinished />
-          <PopularCard size="sm" />
-          <PopularCard size="sm" />
+          {books.map((book) => (
+            <PopularCard
+              key={book.id}
+              size="sm"
+              author={book.author}
+              name={book.name}
+              cover={book.cover_url}
+              rating={book.rating}
+            />
+          ))}
         </RightContainer>
       </HomeContainer>
     </Template>
   )
+}
+
+export async function getStaticProps() {
+  const books = await prisma.book.findMany({
+    include: {
+      ratings: {
+        select: {
+          rate: true,
+        },
+      },
+      // https://www.prisma.io/docs/guides/database/troubleshooting-orm/help-articles/working-with-many-to-many-relations
+      categories: {
+        include: {
+          category: true,
+        },
+      },
+    },
+
+    take: 4,
+    orderBy: {
+      ratings: {
+        _count: 'desc',
+      },
+    },
+  })
+
+  const booksFixedRelationWithCategory = books.map((book) => {
+    return {
+      ...book,
+      categories: book.categories.map((category) => category.category),
+    }
+  })
+
+  const booksWithRating = booksFixedRelationWithCategory.map((book) => {
+    const avgRate =
+      book.ratings.reduce((sum, rateObj) => {
+        return sum + rateObj.rate
+      }, 0) / book.ratings.length
+
+    return {
+      ...book,
+      rating: avgRate,
+    }
+  })
+
+  const ratings = await prisma.rating.findMany({
+    include: {
+      user: true,
+      book: true,
+    },
+    take: 3,
+    orderBy: {
+      created_at: 'desc',
+    },
+  })
+
+  return {
+    props: {
+      // https://stackoverflow.com/a/72837265/6727029
+      books: JSON.parse(JSON.stringify(booksWithRating)),
+      ratings: JSON.parse(JSON.stringify(ratings)),
+    },
+    revalidate: 60 * 60 * 24 * 1, // 1 day
+  }
 }

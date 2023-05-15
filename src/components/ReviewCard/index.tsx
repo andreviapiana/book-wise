@@ -6,11 +6,18 @@ import {
   InfosWrapper,
 } from './styles'
 import Image from 'next/image'
-import bookImg from '../../../public/books/o-hobbit.png'
 import userImg from '../../../public/avatar.png'
 import { StarsRating } from '../StarsRating'
 
-export default function ReviewCard() {
+import { Book, Rating, User as UserPrisma } from '@prisma/client'
+
+export interface CardProps {
+  user?: UserPrisma
+  book: Book
+  rating: Rating
+}
+
+export default function ReviewCard({ user, book, rating }: CardProps) {
   return (
     <Container>
       <CardHeader>
@@ -25,24 +32,19 @@ export default function ReviewCard() {
         </ImageWrapper>
 
         <Infos>
-          <>Jaxson Dias</>
-          <span>Hoje</span>
+          <>{user?.name}</>
+          <time>{rating.created_at}</time>
         </Infos>
 
-        <StarsRating />
+        <StarsRating rating={rating.rate} />
       </CardHeader>
 
       <InfosWrapper>
-        <Image width={108} height={152} src={bookImg} alt="" />
+        <Image width={108} height={152} src={`/${book.cover_url}`} alt="" />
         <Infos>
-          <strong>O Hobbit</strong>
-          <span>J.R.R. Tolkien</span>
-          <p>
-            Semper et sapien proin vitae nisi. Feugiat neque integer donec et
-            aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo
-            a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed
-            vulputate massa velit nibh...
-          </p>
+          <strong>{book.name}</strong>
+          <span>{book.author}</span>
+          <p>{rating.description}</p>
         </Infos>
       </InfosWrapper>
     </Container>
