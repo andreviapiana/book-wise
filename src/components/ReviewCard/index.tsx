@@ -6,14 +6,13 @@ import {
   InfosWrapper,
 } from './styles'
 import Image from 'next/image'
-import userImg from '../../../public/avatar.png'
 import { StarsRating } from '../StarsRating'
 import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
 
 import { Book, Rating, User as UserPrisma } from '@prisma/client'
 
 export interface CardProps {
-  user?: UserPrisma
+  user: UserPrisma
   book: Book
   rating: Rating
 }
@@ -29,9 +28,9 @@ export default function ReviewCard({ user, book, rating }: CardProps) {
           <Image
             width={40}
             height={40}
-            src={userImg}
+            src={user.avatar_url}
             alt=""
-            style={{ borderRadius: '4px' }}
+            style={{ borderRadius: 9999 }}
           />
         </ImageWrapper>
 
