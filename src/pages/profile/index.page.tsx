@@ -1,4 +1,3 @@
-import ReviewCard from '@/components/ReviewCard'
 import { SearchInput } from '@/components/SearchInput'
 import {
   User,
@@ -23,6 +22,7 @@ import {
 } from './styles'
 import userImg from '../../../public/avatar.png'
 import Image from 'next/image'
+import ProfileCard from '@/components/ProfileCard'
 
 export default function Profile() {
   const bestGenre = true
@@ -42,16 +42,7 @@ export default function Profile() {
 
           <CardsContainer>
             <CardWrapper>
-              <span>Há 2 dias</span>
-              <ReviewCard />
-            </CardWrapper>
-            <CardWrapper>
-              <span>Há 12 dias</span>
-              <ReviewCard />
-            </CardWrapper>
-            <CardWrapper>
-              <span>Há 2 meses</span>
-              <ReviewCard />
+              <ProfileCard />
             </CardWrapper>
           </CardsContainer>
         </CenterContainer>
