@@ -33,6 +33,7 @@ import {
 import { GetServerSideProps } from 'next'
 import { useState } from 'react'
 import ProfileCard from '@/components/ProfileCard'
+import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
 
 interface ProfileProps {
   infos: {
@@ -60,6 +61,9 @@ interface ProfileProps {
 }
 
 export default function Profile({ infos, ratings, user }: ProfileProps) {
+  const { dateFormatted, dateRelativeToNow, dateString } =
+    getDateFormattedAndRelative(user.created_at)
+
   const [search, setSearch] = useState('')
 
   const filteredBooks = ratings?.filter((rating) => {
@@ -119,7 +123,9 @@ export default function Profile({ infos, ratings, user }: ProfileProps) {
             />
           </ImageWrapper>
           <p>{user.name}</p>
-          <span>{`membro desde ${user.created_at}`}</span>
+          <time title={dateFormatted} dateTime={dateString}>
+            membro(a) {dateRelativeToNow}
+          </time>
           <Line />
           <UserStats>
             <UserNumber>

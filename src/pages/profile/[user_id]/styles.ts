@@ -62,7 +62,7 @@ export const RightContainer = styled('div', {
     lineHeight: '$short',
   },
 
-  span: {
+  time: {
     fontSize: '$sm',
     lineHeight: '$short',
     color: '$gray400',
