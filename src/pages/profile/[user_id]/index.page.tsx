@@ -60,6 +60,19 @@ interface ProfileProps {
 }
 
 export default function Profile({ infos, ratings, user }: ProfileProps) {
+  const [search, setSearch] = useState('')
+
+  const filteredBooks = ratings?.filter((rating) => {
+    return (
+      rating.book.name
+        .toLowerCase()
+        .includes(search.toLowerCase().replace(/( )+/g, ' ')) ||
+      rating.book.author
+        .toLowerCase()
+        .includes(search.toLowerCase().replace(/( )+/g, ' '))
+    )
+  })
+
   return (
     <Template>
       <Title>
@@ -69,13 +82,18 @@ export default function Profile({ infos, ratings, user }: ProfileProps) {
 
       <MainContainer>
         <CenterContainer>
-          <SearchInput placeholder="Buscar livro ou autor" size={'md'}>
+          <SearchInput
+            placeholder="Buscar livro ou autor"
+            size={'md'}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          >
             <MagnifyingGlass size={20} />
           </SearchInput>
 
           <CardsContainer>
             <CardWrapper>
-              {ratings.map((rating) => (
+              {filteredBooks.map((rating) => (
                 <ProfileCard
                   key={rating.id}
                   book={rating.book}
