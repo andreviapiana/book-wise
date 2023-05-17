@@ -9,19 +9,30 @@ import {
 } from './styles'
 import Image from 'next/image'
 import { StarsRating } from '../StarsRating'
-import bookImg from '../../../public/images/books/o-hobbit.png'
+import { Book, Rating } from '@prisma/client'
+import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
 
-export default function ProfileCard() {
+interface ProfileCardProps {
+  book: Book
+  rating: Rating
+}
+
+export default function PopularCard({ book, rating }: ProfileCardProps) {
+  const { dateFormatted, dateRelativeToNow, dateString } =
+    getDateFormattedAndRelative(rating.created_at)
+
   const isFinished = true
   return (
     <Container>
-      <time>há X dias</time>
+      <time title={dateFormatted} dateTime={dateString}>
+        {dateRelativeToNow}
+      </time>
       <CardWrapper>
         <CardInfos>
           <Image
             width={108}
             height={152}
-            src={bookImg}
+            src={`/${book.cover_url}`}
             alt=""
             style={{ borderRadius: '4px' }}
           />
@@ -34,14 +45,14 @@ export default function ProfileCard() {
             )}
 
             <Infos>
-              <strong>A revolução dos Bichos</strong>
-              <span>George Orwell</span>
+              <strong>{book.name}</strong>
+              <span>{book.author}</span>
             </Infos>
 
-            <StarsRating rating={3} />
+            <StarsRating rating={rating.rate} />
           </InfosWrapper>
         </CardInfos>
-        <Description>Nec tempor nunc in egestas. </Description>
+        <Description>{rating.description}</Description>
       </CardWrapper>
     </Container>
   )

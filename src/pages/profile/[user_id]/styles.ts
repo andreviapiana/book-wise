@@ -39,6 +39,7 @@ export const CenterContainer = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   maxHeight: 'calc(100% - 30px)',
+  width: '100%',
 })
 
 export const CardsContainer = styled('div', {
