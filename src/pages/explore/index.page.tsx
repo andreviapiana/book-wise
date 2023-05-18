@@ -15,9 +15,10 @@ import {
 import { api } from '@/lib/axios'
 import { LateralMenu } from '@/components/LateralMenu'
 
-interface BookWithRatingAndCategories extends Book {
+export interface BookWithRatingAndCategories extends Book {
   rating: number
   categories: Category[]
+  ratings: any[]
 }
 
 export interface ExploreProps {
@@ -53,16 +54,23 @@ export default function Explore({ categories, books }: ExploreProps) {
     )
   })
 
-  const [selectedBook, setSelectedBook] = useState(false)
+  const [selectedBook, setSelectedBook] =
+    useState<BookWithRatingAndCategories | null>(null)
   const sidebarShouldBeOpen = !!selectedBook
 
+  function selectBook(book: BookWithRatingAndCategories) {
+    setSelectedBook(book)
+  }
+
   function deselectBook() {
-    setSelectedBook(false)
+    setSelectedBook(null)
   }
 
   return (
     <Template>
-      {sidebarShouldBeOpen && <LateralMenu handleCloseMenu={deselectBook} />}
+      {sidebarShouldBeOpen && (
+        <LateralMenu handleCloseMenu={deselectBook} book={selectedBook} />
+      )}
       <Title>
         <ChartLineUp size={32} />
         <h2>Explorar</h2>
@@ -103,7 +111,7 @@ export default function Explore({ categories, books }: ExploreProps) {
               name={book.name}
               cover={book.cover_url}
               rating={book.rating}
-              onClick={() => setSelectedBook(true)}
+              onClick={() => selectBook(book)}
             />
           ))}
         </CardsContainer>

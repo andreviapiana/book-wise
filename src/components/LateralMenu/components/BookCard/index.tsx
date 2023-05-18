@@ -9,21 +9,25 @@ import {
   Info,
   Number,
 } from './styles'
-import bookImg from '../../../../../public/images/books/14-habitos-de-desenvolvedores-altamente-produtivos.png'
+import { BookWithRatingAndCategories } from '@/pages/explore/index.page'
 
-export function BookCard() {
+interface BookCardProps {
+  book: BookWithRatingAndCategories
+}
+
+export function BookCard({ book }: BookCardProps) {
   return (
     <Container>
       <BookContainer>
-        <Image src={bookImg} alt="" width="171" height="242" />
+        <Image src={`/${book.cover_url}`} alt="" width="171" height="242" />
         <Info>
           <div>
-            <h3>14 Hábitos de Desenvolvedores Altamente Produtivos</h3>
-            <h4>Zeno Rocha</h4>
+            <h3>{book.name}</h3>
+            <h4>{book.author}</h4>
           </div>
           <div>
-            <StarsRating />
-            <Number>3 avaliações</Number>
+            <StarsRating rating={book.rating} />
+            <Number>{book.ratings.length} avaliações</Number>
           </div>
         </Info>
       </BookContainer>
@@ -32,14 +36,14 @@ export function BookCard() {
           <BookmarkSimple size={32} />
           <div>
             <h5>Categoria</h5>
-            <span>Computação, Educação</span>
+            <span>Programação, Educação</span>
           </div>
         </BookNumber>
         <BookNumber>
           <BookOpen size={32} />
           <div>
             <h5>Páginas</h5>
-            <span>160</span>
+            <span>{book.total_pages}</span>
           </div>
         </BookNumber>
       </Footer>
