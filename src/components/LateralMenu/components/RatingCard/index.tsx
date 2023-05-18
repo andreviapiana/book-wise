@@ -1,26 +1,51 @@
 import { StarsRating } from '@/components/StarsRating'
+import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
 import Image from 'next/image'
 import { Container, Header, User } from './styles'
-import avatar from '../../../../../public/images/books/14-habitos-de-desenvolvedores-altamente-produtivos.png'
 
-export function RatingCard() {
+interface RatingCardProps {
+  avatar: string | null
+  name: string
+  date: Date
+  description: string
+  rate: number
+  rating: any
+}
+
+export function RatingCard({
+  avatar,
+  name,
+  date,
+  description,
+  rate,
+  rating,
+}: RatingCardProps) {
+  const { dateFormatted, dateRelativeToNow, dateString } =
+    getDateFormattedAndRelative(date)
+
   return (
     <Container>
       <Header>
         <User>
-          <Image src={avatar} alt="" width="40" height="40" />
+          <Image
+            src={avatar}
+            alt=""
+            width="40"
+            height="40"
+            style={{
+              objectFit: 'cover',
+            }}
+          />
           <div>
-            <h5>Brandon Botosh</h5>
-            <time>Hoje</time>
+            <h5>{name}</h5>
+            <time title={dateFormatted} dateTime={dateString}>
+              {dateRelativeToNow}
+            </time>
           </div>
         </User>
-        <StarsRating rating={3} />
+        <StarsRating rating={rate} />
       </Header>
-      <p>
-        Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis.
-        Penatibus id vestibulum imperdiet a at imperdiet lectus leo. Sit porta
-        eget nec vitae sit vulputate eget
-      </p>
+      <p>{description}</p>
     </Container>
   )
 }
