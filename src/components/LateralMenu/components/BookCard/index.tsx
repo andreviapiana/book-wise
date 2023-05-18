@@ -16,6 +16,13 @@ interface BookCardProps {
 }
 
 export function BookCard({ book }: BookCardProps) {
+  let numberOfReviews: string
+  if (book.ratings.length === 1) {
+    numberOfReviews = 'avaliação'
+  } else {
+    numberOfReviews = 'avaliações'
+  }
+
   return (
     <Container>
       <BookContainer>
@@ -27,7 +34,9 @@ export function BookCard({ book }: BookCardProps) {
           </div>
           <div>
             <StarsRating rating={book.rating} />
-            <Number>{book.ratings.length} avaliações</Number>
+            <Number>
+              {book.ratings.length} {numberOfReviews}
+            </Number>
           </div>
         </Info>
       </BookContainer>
