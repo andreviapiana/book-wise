@@ -45,7 +45,11 @@ export function BookCard({ book }: BookCardProps) {
           <BookmarkSimple size={32} />
           <div>
             <h5>Categoria</h5>
-            <span>Programação, Educação</span>
+            {book.categories.map((category, index) => (
+              <span key={category.id}>
+                {(index ? ', ' : '') + category.name}
+              </span>
+            ))}
           </div>
         </BookNumber>
         <BookNumber>
