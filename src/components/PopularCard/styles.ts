@@ -65,13 +65,3 @@ export const ReadNotice = styled('div', {
   backgroundColor: '$green300',
   color: '$green100',
 })
-
-export const Rating = styled('div', {
-  display: 'flex',
-
-  gap: '$1',
-
-  svg: {
-    color: '$purple100',
-  },
-})

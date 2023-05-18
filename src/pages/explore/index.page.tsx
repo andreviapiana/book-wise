@@ -13,6 +13,7 @@ import {
   CardsContainer,
 } from './styles'
 import { api } from '@/lib/axios'
+import { LateralMenu } from '@/components/LateralMenu'
 
 interface BookWithRatingAndCategories extends Book {
   rating: number
@@ -52,8 +53,16 @@ export default function Explore({ categories, books }: ExploreProps) {
     )
   })
 
+  const [selectedBook, setSelectedBook] = useState(false)
+  const sidebarShouldBeOpen = !!selectedBook
+
+  function deselectBook() {
+    setSelectedBook(false)
+  }
+
   return (
     <Template>
+      {sidebarShouldBeOpen && <LateralMenu handleCloseMenu={deselectBook} />}
       <Title>
         <ChartLineUp size={32} />
         <h2>Explorar</h2>
@@ -94,6 +103,7 @@ export default function Explore({ categories, books }: ExploreProps) {
               name={book.name}
               cover={book.cover_url}
               rating={book.rating}
+              onClick={() => setSelectedBook(true)}
             />
           ))}
         </CardsContainer>

@@ -1,6 +1,5 @@
 import { Container, Infos, InfosWrapper, ReadNotice } from './styles'
 import Image from 'next/image'
-// import bookImg from '../../../public/images/books/Book.png'
 import { StarsRating } from '../StarsRating'
 
 interface CardSizeProps {
@@ -10,6 +9,7 @@ interface CardSizeProps {
   name: string
   author: string
   rating: number
+  onClick?: (e: any) => void
 }
 
 export default function PopularCard({
