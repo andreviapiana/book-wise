@@ -1,12 +1,25 @@
-import { styled } from '@/styles/stitches.config'
+import { keyframes, styled } from '@/styles/stitches.config'
 
-export const HomeContainer = styled('div', {
-  display: 'flex',
+const entranceAnimation = keyframes({
+  from: {
+    opacity: 0,
+    translate: '100%',
+  },
+  to: {
+    opacity: 1,
+    translate: '0%',
+  },
+})
 
-  maxWidth: '100%',
-  maxHeight: 'calc(100% - 20px)',
-
-  gap: '$16',
+const entranceAnimationVertical = keyframes({
+  from: {
+    opacity: 0,
+    transform: 'translateY(100%)',
+  },
+  to: {
+    opacity: 1,
+    transform: 'translateY(0%)',
+  },
 })
 
 export const Title = styled('div', {
@@ -26,13 +39,25 @@ export const Title = styled('div', {
   svg: {
     color: '$green100',
   },
+
+  '@media(max-width: 768px)': {
+    marginTop: '$16',
+  },
 })
 
 export const MainContainer = styled('div', {
   display: 'flex',
-  maxHeight: 'calc(100% - 30px)',
 
   gap: '$16',
+
+  '@media(max-width: 1200px)': {
+    flexDirection: 'column',
+    overflow: 'overlay',
+  },
+
+  '@media(min-width: 768px)': {
+    maxHeight: 'calc(100% - 30px)',
+  },
 })
 
 export const CenterContainer = styled('div', {
@@ -40,6 +65,8 @@ export const CenterContainer = styled('div', {
   flexDirection: 'column',
   maxHeight: 'calc(100% - 30px)',
   width: '100%',
+
+  animation: `${entranceAnimationVertical} 0.5s`,
 })
 
 export const CardsContainer = styled('div', {
@@ -67,6 +94,15 @@ export const RightContainer = styled('div', {
     lineHeight: '$short',
     color: '$gray400',
   },
+
+  animation: `${entranceAnimation} 0.5s`,
+
+  '@media(max-width: 1200px)': {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    border: 'none',
+  },
 })
 
 export const Line = styled('div', {
@@ -88,14 +124,6 @@ export const CardWrapper = styled('div', {
     fontSize: '$sm',
     color: '$gray300',
   },
-})
-
-export const FilterContainer = styled('div', {
-  display: 'flex',
-
-  maxWidth: '100%',
-  marginBottom: '$12',
-  gap: '$3',
 })
 
 export const ImageWrapper = styled('div', {
