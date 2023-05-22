@@ -63,7 +63,7 @@ export const Infos = styled('div', {
 
     marginTop: '$4',
 
-    overflow: 'hidden',
+    overflow: 'overlay',
   },
 })
 

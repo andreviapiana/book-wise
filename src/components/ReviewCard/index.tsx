@@ -30,7 +30,11 @@ export default function ReviewCard({ user, book, rating }: CardProps) {
             height={40}
             src={user.avatar_url}
             alt=""
-            style={{ borderRadius: 9999 }}
+            style={{
+              objectFit: 'cover',
+              overflow: 'hidden',
+              borderRadius: 9999,
+            }}
           />
         </ImageWrapper>
 
