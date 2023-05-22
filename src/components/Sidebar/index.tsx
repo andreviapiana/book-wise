@@ -49,7 +49,10 @@ export default function Sidebar() {
           </NavButton>
 
           {session === 'authenticated' && (
-            <NavButton href="/profile" active={currentRoute === '/profile'}>
+            <NavButton
+              href={`/profile/`}
+              active={currentRoute.includes('profile')}
+            >
               <User size={24} />
               Perfil
             </NavButton>

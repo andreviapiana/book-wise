@@ -17,6 +17,10 @@ export const SidebarContainer = styled('div', {
   marginBottom: '$5',
 
   boxShadow: '0 0 10px 4px $gray500',
+
+'@media (max-width: 768px)': {
+  display: 'none',
+},
 })
 
 export const TopContainer = styled('div', {
