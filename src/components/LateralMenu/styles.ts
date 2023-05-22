@@ -33,6 +33,10 @@ export const SideMenu = styled('section', {
   background: '$gray800',
 
   animation: `${entranceAnimation} 0.4s`,
+
+  '@media (max-width: 768px)': {
+    maxWidth: '100%',
+  },
 })
 
 export const Title = styled('h6', {
