@@ -1,3 +1,4 @@
+import { MobileMenu } from '@/components/MobileMenu'
 import Sidebar from '@/components/Sidebar'
 import { ReactNode } from 'react'
 import { Container } from './styles'
@@ -10,6 +11,7 @@ export default function Template({
   return (
     <Container>
       <Sidebar />
+      <MobileMenu />
       <main>{children}</main>
     </Container>
   )
