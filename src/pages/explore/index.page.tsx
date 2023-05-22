@@ -72,8 +72,10 @@ export default function Explore({ categories, books }: ExploreProps) {
         <LateralMenu handleCloseMenu={deselectBook} book={selectedBook} />
       )}
       <Title>
-        <ChartLineUp size={32} />
-        <h2>Explorar</h2>
+<div className="title">
+  <ChartLineUp size={32} />
+  <h2>Explorar</h2>
+</div>
         <SearchInput
           placeholder="Buscar livro ou autor"
           value={search}

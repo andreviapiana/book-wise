@@ -1,4 +1,15 @@
-import { styled } from '@/styles/stitches.config'
+import { keyframes, styled } from '@/styles/stitches.config'
+
+const entranceAnimationVertical = keyframes({
+  from: {
+    opacity: 0,
+    transform: 'translateY(100%)',
+  },
+  to: {
+    opacity: 1,
+    transform: 'translateY(0%)',
+  },
+})
 
 export const HomeContainer = styled('div', {
   display: 'flex',
@@ -15,6 +26,7 @@ export const Title = styled('div', {
 
   maxWidth: '100%',
   maxHeight: '100vh',
+  justifyContent: 'space-between',
 
   marginBottom: '$10',
   gap: '$3',
@@ -25,6 +37,16 @@ export const Title = styled('div', {
 
   svg: {
     color: '$green100',
+  },
+
+  '.title': {
+    display: 'flex',
+    gap: '$3',
+  },
+
+  '@media (max-width: 768px)': {
+    marginTop: '$16',
+    flexDirection: 'column',
   },
 })
 
@@ -41,6 +63,8 @@ export const CardsContainer = styled('div', {
   gap: '0 $5',
 
   overflow: 'overlay',
+
+  animation: `${entranceAnimationVertical} 0.5s`,
 })
 
 export const FilterContainer = styled('div', {
