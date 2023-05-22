@@ -1,4 +1,13 @@
-import { styled } from '@/styles/stitches.config'
+import { keyframes, styled } from '@/styles/stitches.config'
+
+const entranceAnimation = keyframes({
+  from: {
+    opacity: 0,
+  },
+  to: {
+    opacity: 1,
+  },
+})
 
 export const Container = styled('div', {
   maxWidth: '1196px',
@@ -11,7 +20,9 @@ export const Container = styled('div', {
 
   justifyContent: 'space-between',
 
-  '@media(max-width: 600px)': {
+  animation: `${entranceAnimation} 2s`,
+
+  '@media(max-width: 768px)': {
     flexDirection: 'column',
     justifyContent: 'center',
   },
@@ -73,7 +84,23 @@ export const Button = styled('button', {
 export const Preview = styled('div', {
   overflow: 'hidden',
 
-  '@media(max-width: 600px)': {
+  '.image': {
+    width: '100%',
+    height: '100%',
+    position: 'relative !important',
+    objectFit: 'cover',
+  },
+
+  '@media(max-width: 768px)': {
     display: 'none',
+  },
+})
+
+export const LogoWrapper = styled('div', {
+  display: 'none',
+
+  '@media(max-width: 768px)': {
+    display: 'flex',
+    marginBottom: '$14',
   },
 })
