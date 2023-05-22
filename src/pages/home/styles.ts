@@ -1,12 +1,40 @@
-import { styled } from '@/styles/stitches.config'
+import { keyframes, styled } from '@/styles/stitches.config'
+
+const entranceAnimation = keyframes({
+  from: {
+    opacity: 0,
+    translate: '100%',
+  },
+  to: {
+    opacity: 1,
+    translate: '0%',
+  },
+})
+
+const entranceAnimationVertical = keyframes({
+  from: {
+    opacity: 0,
+    transform: 'translateY(100%)',
+  },
+  to: {
+    opacity: 1,
+    transform: 'translateY(0%)',
+  },
+})
 
 export const HomeContainer = styled('div', {
-  display: 'flex',
-
   maxWidth: '100%',
   maxHeight: 'calc(100% - 20px)',
 
   gap: '$16',
+
+  '@media (min-width: 1200px)': {
+    display: 'flex',
+  },
+
+  '@media (min-width: 768px)': {
+    overflow: 'overlay',
+  },
 })
 
 export const CenterContainer = styled('div', {
@@ -16,6 +44,14 @@ export const CenterContainer = styled('div', {
   padding: '0 $5 0 0',
 
   overflowY: 'overlay',
+
+  minWidth: '348px',
+
+  animation: `${entranceAnimationVertical} 0.5s`,
+
+  '@media (max-width: 1200px)': {
+    marginBottom: '$16',
+  },
 })
 
 export const RightContainer = styled('div', {
@@ -25,6 +61,8 @@ export const RightContainer = styled('div', {
 
   maxWidth: '100%',
   maxHeight: '100vh',
+
+  animation: `${entranceAnimation} 0.5s`,
 })
 
 export const Title = styled('div', {
@@ -39,6 +77,10 @@ export const Title = styled('div', {
 
   svg: {
     color: '$green100',
+  },
+
+  '@media (max-width: 768px)': {
+    marginTop: '$16',
   },
 })
 
