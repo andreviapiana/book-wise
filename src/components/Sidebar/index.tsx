@@ -13,6 +13,7 @@ import Link from 'next/link'
 import { Binoculars, ChartLineUp, SignIn, SignOut, User } from 'phosphor-react'
 import { useRouter } from 'next/router'
 import userImg from '../../../public/avatar.png'
+import { LoginModal } from '../LoginModal'
 
 export default function Sidebar() {
   const session = 'authenticated'
@@ -22,6 +23,8 @@ export default function Sidebar() {
 
   return (
     <SidebarContainer>
+      <LoginModal />
+
       <Image
         src={sidebarBackground}
         fill={true}
