@@ -18,9 +18,9 @@ export const SidebarContainer = styled('div', {
 
   boxShadow: '0 0 10px 4px $gray500',
 
-'@media (max-width: 768px)': {
-  display: 'none',
-},
+  '@media (max-width: 768px)': {
+    display: 'none',
+  },
 })
 
 export const TopContainer = styled('div', {
@@ -75,12 +75,20 @@ export const NavButton = styled(Link, {
   },
 })
 
-export const LoginButton = styled(Link, {
+export const LoginButton = styled('button', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
 
+  background: 'none',
+  border: 'none',
+
+  fontSize: '$md',
+  color: '$gray200',
+
   gap: '$3',
+
+  cursor: 'pointer',
 
   img: {
     borderRadius: '$full',
