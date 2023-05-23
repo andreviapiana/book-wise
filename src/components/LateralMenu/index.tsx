@@ -13,6 +13,7 @@ import { BookWithRatingAndCategories } from '@/pages/explore/index.page'
 import { useEffect, useState } from 'react'
 import { Rating as RatingInfo, User as UserPrisma } from '@prisma/client'
 import { api } from '@/lib/axios'
+import { LoginModal } from '../LoginModal'
 
 interface BookReviewsSidebarProps {
   handleCloseMenu(): void
@@ -40,8 +41,19 @@ export function LateralMenu({
     loadRatings()
   }, [book.id])
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  async function openMenu() {
+    setIsMenuOpen(true)
+  }
+
+  async function closeMenu() {
+    setIsMenuOpen(false)
+  }
+
   return (
     <Container>
+      {isMenuOpen && <LoginModal onClose={closeMenu} />}
       <ContainerOverlay onClick={handleCloseMenu} />
       <SideMenu>
         <CloseButton
@@ -54,7 +66,7 @@ export function LateralMenu({
         <BookCard book={book} />
         <Title>
           <span>Avaliações</span>
-          <LoginButton>
+          <LoginButton onClick={openMenu}>
             <strong>Avaliar</strong>
           </LoginButton>
         </Title>
