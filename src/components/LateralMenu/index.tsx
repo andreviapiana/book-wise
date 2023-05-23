@@ -1,7 +1,14 @@
 import { X } from 'phosphor-react'
 import { BookCard } from './components/BookCard'
 import { RatingCard } from './components/RatingCard'
-import { CloseButton, Container, SideMenu, Title } from './styles'
+import {
+  CloseButton,
+  Container,
+  ContainerOverlay,
+  LoginButton,
+  SideMenu,
+  Title,
+} from './styles'
 import { BookWithRatingAndCategories } from '@/pages/explore/index.page'
 import { useEffect, useState } from 'react'
 import { Rating as RatingInfo, User as UserPrisma } from '@prisma/client'
@@ -34,19 +41,22 @@ export function LateralMenu({
   }, [book.id])
 
   return (
-    <Container onClick={handleCloseMenu}>
-      <CloseButton
-        title="Fechar menu lateral"
-        type="button"
-        onClick={handleCloseMenu}
-      >
-        <X size={24} />
-      </CloseButton>
+    <Container>
+      <ContainerOverlay onClick={handleCloseMenu} />
       <SideMenu>
+        <CloseButton
+          title="Fechar menu lateral"
+          type="button"
+          onClick={handleCloseMenu}
+        >
+          <X size={24} />
+        </CloseButton>
         <BookCard book={book} />
         <Title>
           <span>Avaliações</span>
-          <a href="">Avaliar</a>
+          <LoginButton>
+            <strong>Avaliar</strong>
+          </LoginButton>
         </Title>
         {ratings?.map((rating) => (
           <RatingCard
