@@ -14,8 +14,10 @@ import github from '../../../public/github.svg'
 import { RocketLaunch } from 'phosphor-react'
 import Link from 'next/link'
 import logoImg from '@/../public/logo.svg'
+import { signIn, useSession } from 'next-auth/react'
 
 export default function Login() {
+  const session = useSession()
   return (
     <Container>
       <Preview>
@@ -46,7 +48,7 @@ export default function Login() {
         <h4>Faça seu login ou acesse como visitante</h4>
 
         <ButtonsWrapper>
-          <Button>
+          <Button onClick={() => signIn('google')}>
             <Image src={google} height={32} priority alt="Logotipo do Google" />
             Entrar com o Google
           </Button>
