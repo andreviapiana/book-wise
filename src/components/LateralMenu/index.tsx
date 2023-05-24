@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react'
 import { Rating as RatingInfo, User as UserPrisma } from '@prisma/client'
 import { api } from '@/lib/axios'
 import { LoginModal } from '../LoginModal'
+import { ReviewFormCard } from './components/ReviewFormCard'
 
 interface BookReviewsSidebarProps {
   handleCloseMenu(): void
@@ -41,20 +42,30 @@ export function LateralMenu({
     loadRatings()
   }, [book.id])
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  async function openMenu() {
-    setIsMenuOpen(true)
+  async function openModal() {
+    setIsModalOpen(true)
   }
 
-  async function closeMenu() {
-    setIsMenuOpen(false)
+  async function closeModal() {
+    setIsModalOpen(false)
+  }
+
+  const session = true
+
+  const [reviewFormIsVisible, setReviewFormIsVisible] = useState(false)
+
+  async function handleChangeReviewFormVisibility() {
+    setReviewFormIsVisible((state) => !state)
   }
 
   return (
     <Container>
-      {isMenuOpen && <LoginModal onClose={closeMenu} />}
+      {isModalOpen && <LoginModal onClose={closeModal} />}
+
       <ContainerOverlay onClick={handleCloseMenu} />
+
       <SideMenu>
         <CloseButton
           title="Fechar menu lateral"
@@ -64,12 +75,20 @@ export function LateralMenu({
           <X size={24} />
         </CloseButton>
         <BookCard book={book} />
+
         <Title>
           <span>Avaliações</span>
-          <LoginButton onClick={openMenu}>
+          <LoginButton
+            onClick={session ? handleChangeReviewFormVisibility : openModal}
+          >
             <strong>Avaliar</strong>
           </LoginButton>
         </Title>
+
+        {reviewFormIsVisible && (
+          <ReviewFormCard onClose={handleChangeReviewFormVisibility} />
+        )}
+
         {ratings?.map((rating) => (
           <RatingCard
             key={rating.id}
