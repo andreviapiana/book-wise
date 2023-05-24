@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Check, X } from 'phosphor-react'
+import { Check, Star, X } from 'phosphor-react'
 import {
   ButtonsContainer,
   ActionButton,
@@ -12,6 +12,7 @@ import {
 } from './styles'
 import userImg from '@/../public/avatar.png'
 import { ChangeEvent, useState } from 'react'
+import { Rating } from 'react-simple-star-rating'
 
 interface ReviewFormCardProps {
   onClose: () => void
@@ -22,6 +23,13 @@ export function ReviewFormCard({ onClose }: ReviewFormCardProps) {
 
   function changeCharacterCount(event: ChangeEvent<HTMLTextAreaElement>) {
     setCharacterCount(event.target.value.length)
+  }
+
+  const [rating, setRating] = useState(0)
+
+  // Catch Rating value
+  const handleRating = (rate: number) => {
+    setRating(rate)
   }
 
   return (
@@ -41,6 +49,14 @@ export function ReviewFormCard({ onClose }: ReviewFormCardProps) {
             <h5>André</h5>
           </div>
         </User>
+
+        <Rating
+          onClick={handleRating}
+          emptyIcon={<Star size={28} />}
+          fillIcon={<Star weight="fill" size={28} />}
+          emptyColor="#8381D9"
+          fillColor="#8381D9"
+        />
       </Header>
 
       <ReviewFormContainer>
