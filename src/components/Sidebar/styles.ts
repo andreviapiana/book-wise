@@ -98,6 +98,12 @@ export const LoginButton = styled('button', {
 
   background: 'none',
   border: 'none',
+
+  color: '$gray200',
+
+  gap: '$3',
+
+  cursor: 'pointer',
 })
 
 export const ImageWrapper = styled('div', {
