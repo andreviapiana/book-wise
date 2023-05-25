@@ -4,12 +4,28 @@ import { X } from 'phosphor-react'
 import google from '@/../public/google.svg'
 import github from '@/../public/github.svg'
 import { Portal } from '../Portal'
+import { useRouter } from 'next/router'
+import { signIn, useSession } from 'next-auth/react'
+import { useEffect } from 'react'
 
 interface LoginModalProps {
   onClose: () => void
 }
 
 export function LoginModal({ onClose }: LoginModalProps) {
+  const router = useRouter()
+  const session = useSession()
+
+  async function handleSignInGoogle() {
+    await signIn('google')
+  }
+
+  useEffect(() => {
+    if (session.status === 'authenticated') {
+      router.push('/home')
+    }
+  }, [session, router])
+
   return (
     <Portal>
       <ModalWrapper>
@@ -23,7 +39,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
 
         <h4>Faça login para deixar sua avaliação</h4>
 
-        <ModalButton>
+        <ModalButton onClick={handleSignInGoogle}>
           <Image src={google} height={32} priority alt="Logotipo do Google" />
           Entrar com o Google
         </ModalButton>
