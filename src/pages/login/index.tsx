@@ -15,9 +15,23 @@ import { RocketLaunch } from 'phosphor-react'
 import Link from 'next/link'
 import logoImg from '@/../public/logo.svg'
 import { signIn, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 export default function Login() {
+  const router = useRouter()
   const session = useSession()
+
+  async function handleSignInGoogle() {
+    await signIn('google')
+  }
+
+  useEffect(() => {
+    if (session.status === 'authenticated') {
+      router.push('/home')
+    }
+  }, [session, router])
+
   return (
     <Container>
       <Preview>
@@ -48,7 +62,7 @@ export default function Login() {
         <h4>Faça seu login ou acesse como visitante</h4>
 
         <ButtonsWrapper>
-          <Button onClick={() => signIn('google')}>
+          <Button onClick={handleSignInGoogle}>
             <Image src={google} height={32} priority alt="Logotipo do Google" />
             Entrar com o Google
           </Button>
