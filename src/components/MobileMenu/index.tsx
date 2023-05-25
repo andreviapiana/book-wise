@@ -6,6 +6,7 @@ import {
   NavigationWrapper,
   MobileMenuWrapper,
   HamburgerWrapper,
+  InfosWrapper,
 } from './styles'
 import { Divide as Hamburger } from 'hamburger-react'
 import { useState } from 'react'
@@ -14,18 +15,36 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Image from 'next/image'
 import logoImg from '../../../public/logo.svg'
-import userImg from '../../../public/avatar.png'
+import avatarPlaceholder from '../../../public/avatar.png'
+import { signOut, useSession } from 'next-auth/react'
+import { LoginModal } from '../LoginModal'
 
 export function MobileMenu() {
-  const [isOpen, setOpen] = useState(false)
+  const session = useSession()
 
-  const session = 'authenticated'
+  const [isOpen, setOpen] = useState(false)
 
   const router = useRouter()
   const currentRoute = router.pathname
 
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  async function openModal() {
+    setIsModalOpen(true)
+  }
+
+  async function closeModal() {
+    setIsModalOpen(false)
+  }
+
+  async function handleLogout() {
+    signOut({ callbackUrl: '/' })
+  }
+
   return (
     <Container>
+      {isModalOpen && <LoginModal onClose={closeModal} />}
+
       <MobileMenuWrapper>
         <HamburgerWrapper>
           <Hamburger toggled={isOpen} toggle={setOpen} />
@@ -48,7 +67,7 @@ export function MobileMenu() {
                 <Binoculars size={24} /> Explorar
               </NavButton>
 
-              {session === 'authenticated' && (
+              {session.status === 'authenticated' && (
                 <NavButton
                   href={`/profile/`}
                   active={currentRoute.includes('profile')}
@@ -59,16 +78,23 @@ export function MobileMenu() {
               )}
             </div>
 
-            {session === 'authenticated' ? (
-              <LoginButton href={'/'}>
+            {session.status === 'authenticated' ? (
+              <InfosWrapper>
                 <ImageWrapper>
-                  <Image src={userImg} alt="" width={32} height={32} />
+                  <Image
+                    src={session.data.user?.image || avatarPlaceholder}
+                    alt=""
+                    width={32}
+                    height={32}
+                  />
                 </ImageWrapper>
-                André
-                <SignOut size={20} color="#F75A68" />
-              </LoginButton>
+                <p>{String(session.data.user?.name).split(' ')[0]}</p>
+                <LoginButton>
+                  <SignOut size={20} color="#F75A68" onClick={handleLogout} />
+                </LoginButton>
+              </InfosWrapper>
             ) : (
-              <LoginButton href={'/'}>
+              <LoginButton onClick={openModal}>
                 <strong>Fazer login</strong>
                 <SignIn size={20} weight="fill" color="#50B2C0" />
               </LoginButton>
