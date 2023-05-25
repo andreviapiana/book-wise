@@ -75,7 +75,7 @@ export const NavButton = styled(Link, {
   },
 })
 
-export const LoginButton = styled('button', {
+export const InfosWrapper = styled('div', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -88,11 +88,16 @@ export const LoginButton = styled('button', {
 
   gap: '$3',
 
-  cursor: 'pointer',
-
   img: {
     borderRadius: '$full',
   },
+})
+
+export const LoginButton = styled('button', {
+  display: 'flex',
+
+  background: 'none',
+  border: 'none',
 })
 
 export const ImageWrapper = styled('div', {

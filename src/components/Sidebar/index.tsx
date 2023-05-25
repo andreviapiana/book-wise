@@ -5,6 +5,7 @@ import {
   SidebarContainer,
   LoginButton,
   ImageWrapper,
+  InfosWrapper,
 } from './styles'
 import Image from 'next/image'
 import logoImg from '../../../public/logo.svg'
@@ -15,10 +16,10 @@ import { useRouter } from 'next/router'
 import userImg from '../../../public/avatar.png'
 import { LoginModal } from '../LoginModal'
 import { useState } from 'react'
+import { signOut, useSession } from 'next-auth/react'
 
 export default function Sidebar() {
-  const session = 'authenticated'
-
+  const session = useSession()
   const router = useRouter()
   const currentRoute = router.pathname
 
@@ -30,6 +31,10 @@ export default function Sidebar() {
 
   async function closeModal() {
     setIsModalOpen(false)
+  }
+
+  function handleLogout() {
+    signOut({ callbackUrl: '/' })
   }
 
   return (
@@ -62,7 +67,7 @@ export default function Sidebar() {
             <Binoculars size={24} /> Explorar
           </NavButton>
 
-          {session === 'authenticated' && (
+          {session && (
             <NavButton
               href={`/profile/`}
               active={currentRoute.includes('profile')}
@@ -74,14 +79,16 @@ export default function Sidebar() {
         </NavigationWrapper>
       </TopContainer>
 
-      {session === 'authenticated' ? (
-        <LoginButton>
+      {session.status === 'authenticated' ? (
+        <InfosWrapper>
           <ImageWrapper>
             <Image src={userImg} alt="" width={32} height={32} />
           </ImageWrapper>
-          André
-          <SignOut size={20} color="#F75A68" />
-        </LoginButton>
+          <p>Andre</p>
+          <LoginButton>
+            <SignOut size={20} color="#F75A68" onClick={handleLogout} />
+          </LoginButton>
+        </InfosWrapper>
       ) : (
         <LoginButton onClick={openModal}>
           <strong>Fazer login</strong>
