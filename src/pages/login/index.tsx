@@ -12,25 +12,20 @@ import loginBackgroundImage from '../../../public/background.svg'
 import google from '../../../public/google.svg'
 import github from '../../../public/github.svg'
 import { RocketLaunch } from 'phosphor-react'
-import Link from 'next/link'
 import logoImg from '@/../public/logo.svg'
-import { signIn, useSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 
 export default function Login() {
   const router = useRouter()
-  const session = useSession()
 
-  async function handleSignInGoogle() {
-    await signIn('google')
+  async function handleSignIn(provider: string) {
+    if (provider === 'google') {
+      await signIn('google', { callbackUrl: '/home' })
+    } else if (provider === 'github') {
+      await signIn('github', { callbackUrl: '/home' })
+    } else router.push('/home')
   }
-
-  useEffect(() => {
-    if (session.status === 'authenticated') {
-      router.push('/home')
-    }
-  }, [session, router])
 
   return (
     <Container>
@@ -62,22 +57,20 @@ export default function Login() {
         <h4>Faça seu login ou acesse como visitante</h4>
 
         <ButtonsWrapper>
-          <Button onClick={handleSignInGoogle}>
+          <Button onClick={() => handleSignIn('google')}>
             <Image src={google} height={32} priority alt="Logotipo do Google" />
             Entrar com o Google
           </Button>
 
-          <Button>
+          <Button onClick={() => handleSignIn('github')}>
             <Image src={github} height={32} priority alt="Logotipo do GitHub" />
             Entrar com o GitHub
           </Button>
 
-          <Link href={'/home'}>
-            <Button>
-              <RocketLaunch size={32} weight="bold" />
-              Acessar como visitante
-            </Button>
-          </Link>
+          <Button onClick={() => handleSignIn('visitor')}>
+            <RocketLaunch size={32} weight="bold" />
+            Acessar como visitante
+          </Button>
         </ButtonsWrapper>
       </Hero>
     </Container>
