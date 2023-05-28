@@ -15,6 +15,7 @@ import { Rating as RatingInfo, User as UserPrisma } from '@prisma/client'
 import { api } from '@/lib/axios'
 import { LoginModal } from '../LoginModal'
 import { ReviewFormCard } from './components/ReviewFormCard'
+import { useSession } from 'next-auth/react'
 
 interface BookReviewsSidebarProps {
   handleCloseMenu(): void
@@ -29,6 +30,8 @@ export function LateralMenu({
   handleCloseMenu,
   book,
 }: BookReviewsSidebarProps) {
+  const session = useSession()
+
   const [ratings, setRatings] = useState<RatingProps[] | null>(null)
 
   useEffect(() => {
@@ -51,8 +54,6 @@ export function LateralMenu({
   async function closeModal() {
     setIsModalOpen(false)
   }
-
-  const session = true
 
   const [reviewFormIsVisible, setReviewFormIsVisible] = useState(false)
 
@@ -79,7 +80,11 @@ export function LateralMenu({
         <Title>
           <span>Avaliações</span>
           <LoginButton
-            onClick={session ? handleChangeReviewFormVisibility : openModal}
+            onClick={
+              session.status === 'authenticated'
+                ? handleChangeReviewFormVisibility
+                : openModal
+            }
           >
             <strong>Avaliar</strong>
           </LoginButton>

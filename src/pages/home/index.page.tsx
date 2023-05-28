@@ -13,6 +13,7 @@ import {
 } from './styles'
 import { prisma } from '@/lib/prisma'
 import { Book, Category, Rating, User } from '@prisma/client'
+import { useSession } from 'next-auth/react'
 
 interface BookWithRatingAndCategories extends Book {
   rating: number
@@ -30,7 +31,7 @@ interface HomeProps {
 }
 
 export default function Home({ ratings, books }: HomeProps) {
-  const session = 'authenticated'
+  const session = useSession()
 
   return (
     <Template>
@@ -41,12 +42,12 @@ export default function Home({ ratings, books }: HomeProps) {
 
       <HomeContainer>
         <CenterContainer>
-          {session === 'authenticated' && (
+          {session.status === 'authenticated' && (
             <>
               <Subtitle>
                 <span>Sua última leitura</span>
                 <Link href={'/'}>
-                  Ver todos
+                  Ver todas
                   <CaretRight size={16} />
                 </Link>
               </Subtitle>
@@ -71,7 +72,7 @@ export default function Home({ ratings, books }: HomeProps) {
         <RightContainer>
           <Subtitle>
             <span>Livros Populares</span>
-            <Link href={'/'}>
+            <Link href={'/explore'}>
               Ver todos
               <CaretRight size={16} />
             </Link>

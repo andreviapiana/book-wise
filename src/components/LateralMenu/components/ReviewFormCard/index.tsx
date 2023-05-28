@@ -10,9 +10,10 @@ import {
   CharacterCounter,
   ReviewFormContainer,
 } from './styles'
-import userImg from '@/../public/avatar.png'
 import { ChangeEvent, useState } from 'react'
 import { Rating } from 'react-simple-star-rating'
+import { useSession } from 'next-auth/react'
+import avatarPlaceholder from '../../../../../public/avatar.png'
 
 interface ReviewFormCardProps {
   onClose: () => void
@@ -31,13 +32,16 @@ export function ReviewFormCard({ onClose }: ReviewFormCardProps) {
   const handleRating = (rate: number) => {
     setRating(rate)
   }
+  console.log(rating)
+
+  const session = useSession()
 
   return (
     <Container>
       <Header>
         <User>
           <Image
-            src={userImg}
+            src={session.data?.user?.image || avatarPlaceholder}
             alt=""
             width="40"
             height="40"
@@ -46,7 +50,7 @@ export function ReviewFormCard({ onClose }: ReviewFormCardProps) {
             }}
           />
           <div>
-            <h5>André</h5>
+            <h5>{session.data?.user?.name}</h5>
           </div>
         </User>
 
