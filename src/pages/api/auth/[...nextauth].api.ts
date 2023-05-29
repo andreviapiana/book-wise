@@ -12,6 +12,8 @@ export function buildNextAuthOptions(
     adapter: PrismaAdapter(req, res),
     providers: [
       GoogleProvider({
+        // Linkagem das Contas com o mesmo email ao usar Provedores diferentes (allowDangerousEmailAccountLink) https://next-auth.js.org/configuration/providers/oauth#allowdangerousemailaccountlinking-option //
+        allowDangerousEmailAccountLinking: true,
         clientId: process.env.GOOGLE_CLIENT_ID ?? '',
         clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
         authorization: {
@@ -31,6 +33,7 @@ export function buildNextAuthOptions(
         },
       }),
       GithubProvider({
+        allowDangerousEmailAccountLinking: true,
         clientId: process.env.GITHUB_ID ?? '',
         clientSecret: process.env.GITHUB_SECRET ?? '',
         profile(profile: GithubProfile) {
