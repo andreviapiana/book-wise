@@ -17,6 +17,7 @@ import { useSession } from 'next-auth/react'
 import { getServerSession } from 'next-auth'
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api'
 import { GetServerSideProps } from 'next'
+import EmptyCard from '@/components/EmptyCard'
 
 interface BookWithRatingAndCategories extends Book {
   rating: number
@@ -47,7 +48,7 @@ export default function Home({ ratings, books, myLastRating }: HomeProps) {
         <CenterContainer>
           {session.data?.user && (
             <>
-              {myLastRating && (
+              {myLastRating ? (
                 <>
                   <Subtitle>
                     <span>Sua última leitura</span>
@@ -61,6 +62,13 @@ export default function Home({ ratings, books, myLastRating }: HomeProps) {
                     rating={myLastRating}
                     book={myLastRating.book}
                   />
+                </>
+              ) : (
+                <>
+                  <Subtitle>
+                    <span>Sua última leitura</span>
+                  </Subtitle>
+                  <EmptyCard />
                 </>
               )}
             </>
