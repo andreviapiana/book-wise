@@ -20,6 +20,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { api } from '@/lib/axios'
+import { toast } from 'react-toastify'
 
 const createRatingSchema = z.object({
   rate: z
@@ -83,6 +84,7 @@ export function ReviewFormCard({
       bookId,
     })
     closeLateralMenu()
+    toast.success('Avaliação feita com sucesso!')
   }
 
   return (
