@@ -91,7 +91,12 @@ export function LateralMenu({
         </Title>
 
         {reviewFormIsVisible && (
-          <ReviewFormCard onClose={handleChangeReviewFormVisibility} />
+          <ReviewFormCard
+            bookId={book.id}
+            userId={session.data?.user.id}
+            onClose={handleChangeReviewFormVisibility}
+            closeLateralMenu={handleCloseMenu}
+          />
         )}
 
         {ratings?.map((rating) => (

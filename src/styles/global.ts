@@ -44,6 +44,7 @@ export const globalStyles = globalCss({
   '.loading': {
     margin: '1rem auto',
     animation: `${spin} 1.5s linear infinite`,
+    color: '$purple100',
   },
 
   a: {

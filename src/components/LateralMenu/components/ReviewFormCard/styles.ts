@@ -9,7 +9,9 @@ const entranceAnimation = keyframes({
   },
 })
 
-export const Container = styled('div', {
+export const Container = styled('form', {
+  position: 'relative',
+
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
@@ -124,4 +126,33 @@ export const ActionButton = styled('button', {
     backgroundColor: '$gray500',
     transition: 'all 0.5s ease-in-out',
   },
+})
+
+export const FormErrors = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$2',
+  fontSize: '$sm',
+  color: 'red',
+
+  marginRight: 'auto',
+})
+
+export const Loading = styled('div', {
+  position: 'absolute',
+  top: '0px',
+  left: '0px',
+
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+
+  width: '100%',
+  height: '100%',
+
+  borderRadius: '$md',
+
+  backgroundColor: 'rgba(0, 0, 0, 0.6)',
+
+  zIndex: 999,
 })

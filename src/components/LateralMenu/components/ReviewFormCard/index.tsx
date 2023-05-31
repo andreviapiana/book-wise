@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Check, Star, X } from 'phosphor-react'
+import { Check, Star, X, CircleNotch } from 'phosphor-react'
 import {
   ButtonsContainer,
   ActionButton,
@@ -9,39 +9,93 @@ import {
   User,
   CharacterCounter,
   ReviewFormContainer,
+  FormErrors,
+  Loading,
 } from './styles'
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import { Rating } from 'react-simple-star-rating'
 import { useSession } from 'next-auth/react'
 import avatarPlaceholder from '../../../../../public/avatar.png'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { api } from '@/lib/axios'
+
+const createRatingSchema = z.object({
+  rate: z
+    .number()
+    .positive({ message: 'Por favor, selecione uma nota de 1 a 5' })
+    .max(5),
+  description: z
+    .string()
+    .min(3, { message: 'Por favor, adicione uma descrição a sua avaliação' }),
+})
+
+type CreateRatingFormData = z.infer<typeof createRatingSchema>
 
 interface ReviewFormCardProps {
   onClose: () => void
+  closeLateralMenu: () => void
+  bookId: string
+  userId: string | number | undefined
 }
 
-export function ReviewFormCard({ onClose }: ReviewFormCardProps) {
-  const [characterCount, setCharacterCount] = useState(0)
+export function ReviewFormCard({
+  onClose,
+  bookId,
+  userId,
+  closeLateralMenu,
+}: ReviewFormCardProps) {
+  const session = useSession()
 
-  function changeCharacterCount(event: ChangeEvent<HTMLTextAreaElement>) {
-    setCharacterCount(event.target.value.length)
-  }
-
+  // Seletor de Rating
   const [rating, setRating] = useState(0)
 
   // Catch Rating value
   const handleRating = (rate: number) => {
     setRating(rate)
+    setValue('rate', rate)
   }
-  console.log(rating)
 
-  const session = useSession()
+  // Formulário
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    watch,
+    setValue,
+  } = useForm<CreateRatingFormData>({
+    resolver: zodResolver(createRatingSchema),
+    defaultValues: {
+      rate: rating,
+    },
+  })
+
+  // Contagem de Caracteres
+  const descriptionCount = watch('description')?.split('').length || 0
+
+  // Envio do Formulário
+  async function handleCreateRating(data: CreateRatingFormData) {
+    await api.post(`/ratings/`, {
+      rate: data.rate,
+      description: data.description,
+      userId,
+      bookId,
+    })
+    closeLateralMenu()
+  }
 
   return (
-    <Container>
+    <Container onSubmit={handleSubmit(handleCreateRating)}>
+      {isSubmitting && (
+        <Loading>
+          <CircleNotch className="loading" size={52} />
+        </Loading>
+      )}
       <Header>
         <User>
           <Image
-            src={session.data?.user?.image || avatarPlaceholder}
+            src={session.data?.user.avatar_url || avatarPlaceholder}
             alt=""
             width="40"
             height="40"
@@ -50,7 +104,7 @@ export function ReviewFormCard({ onClose }: ReviewFormCardProps) {
             }}
           />
           <div>
-            <h5>{session.data?.user?.name}</h5>
+            <h5>{session.data?.user.name}</h5>
           </div>
         </User>
 
@@ -67,26 +121,31 @@ export function ReviewFormCard({ onClose }: ReviewFormCardProps) {
         <ReviewForm
           placeholder="Escreva sua avaliação"
           maxLength={450}
-          onChange={changeCharacterCount}
+          {...register('description')}
         />
-        <CharacterCounter>{characterCount}/450</CharacterCounter>
+
+        <CharacterCounter>{descriptionCount}/450</CharacterCounter>
       </ReviewFormContainer>
 
       <ButtonsContainer>
-        <ActionButton
-          title="Enviar avaliação"
-          type="button"
-          /* onClick={} */
-        >
-          <Check size={24} color="#8381D9" />
-        </ActionButton>
-        <ActionButton
-          title="Fechar formulário de avaliação"
-          type="button"
-          onClick={onClose}
-        >
-          <X size={24} color="#50B2C0" />
-        </ActionButton>
+        {(errors.rate || errors.description) && (
+          <FormErrors>
+            <span>{errors.rate && errors.rate.message}</span>
+            <span>{errors.description && errors.description.message}</span>
+          </FormErrors>
+        )}
+        <>
+          <ActionButton title="Enviar avaliação" type="submit">
+            <Check size={24} color="#8381D9" />
+          </ActionButton>
+          <ActionButton
+            title="Fechar formulário de avaliação"
+            type="button"
+            onClick={onClose}
+          >
+            <X size={24} color="#50B2C0" />
+          </ActionButton>
+        </>
       </ButtonsContainer>
     </Container>
   )
