@@ -17,7 +17,6 @@ export const Container = styled('div', {
 
   '&:hover': {
     border: '2px solid $gray500',
-    cursor: 'pointer',
   },
 })
 

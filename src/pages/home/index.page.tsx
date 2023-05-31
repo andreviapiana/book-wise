@@ -14,6 +14,9 @@ import {
 import { prisma } from '@/lib/prisma'
 import { Book, Category, Rating, User } from '@prisma/client'
 import { useSession } from 'next-auth/react'
+import { getServerSession } from 'next-auth'
+import { buildNextAuthOptions } from '../api/auth/[...nextauth].api'
+import { GetServerSideProps } from 'next'
 
 interface BookWithRatingAndCategories extends Book {
   rating: number
@@ -28,11 +31,11 @@ export interface RatingWithUserAndBook extends Rating {
 interface HomeProps {
   ratings: RatingWithUserAndBook[]
   books: BookWithRatingAndCategories[]
+  myLastRating: RatingWithUserAndBook | null
 }
 
-export default function Home({ ratings, books }: HomeProps) {
+export default function Home({ ratings, books, myLastRating }: HomeProps) {
   const session = useSession()
-
   return (
     <Template>
       <Title>
@@ -42,16 +45,24 @@ export default function Home({ ratings, books }: HomeProps) {
 
       <HomeContainer>
         <CenterContainer>
-          {session.status === 'authenticated' && (
+          {session.data?.user && (
             <>
-              <Subtitle>
-                <span>Sua última leitura</span>
-                <Link href={'/'}>
-                  Ver todas
-                  <CaretRight size={16} />
-                </Link>
-              </Subtitle>
-              <RecentReadCard />
+              {myLastRating && (
+                <>
+                  <Subtitle>
+                    <span>Sua última leitura</span>
+                    <Link href={`/profile/${session.data.user.id}`}>
+                      Ver todas
+                      <CaretRight size={16} />
+                    </Link>
+                  </Subtitle>
+                  <RecentReadCard
+                    key={myLastRating.id}
+                    rating={myLastRating}
+                    book={myLastRating.book}
+                  />
+                </>
+              )}
             </>
           )}
 
@@ -93,7 +104,30 @@ export default function Home({ ratings, books }: HomeProps) {
   )
 }
 
-export async function getStaticProps() {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getServerSession(
+    req,
+    res,
+    buildNextAuthOptions(req, res),
+  )
+
+  let myLastRating = null
+
+  if (session?.user) {
+    myLastRating = await prisma.rating.findFirst({
+      where: {
+        user_id: session.user.id,
+      },
+      include: {
+        user: true,
+        book: true,
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    })
+  }
+
   const books = await prisma.book.findMany({
     include: {
       ratings: {
@@ -137,11 +171,16 @@ export async function getStaticProps() {
   })
 
   const ratings = await prisma.rating.findMany({
+    where: {
+      NOT: {
+        id: myLastRating?.id,
+      },
+    },
     include: {
       user: true,
       book: true,
     },
-    take: 3,
+    take: 4,
     orderBy: {
       created_at: 'desc',
     },
@@ -152,7 +191,7 @@ export async function getStaticProps() {
       // https://stackoverflow.com/a/72837265/6727029
       books: JSON.parse(JSON.stringify(booksWithRating)),
       ratings: JSON.parse(JSON.stringify(ratings)),
+      myLastRating: JSON.parse(JSON.stringify(myLastRating)),
     },
-    revalidate: 60 * 60 * 24 * 1, // 1 day
   }
 }

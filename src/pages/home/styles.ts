@@ -46,6 +46,7 @@ export const CenterContainer = styled('div', {
   overflowY: 'overlay',
 
   minWidth: '348px',
+  width: '100%',
 
   animation: `${entranceAnimationVertical} 0.5s`,
 
