@@ -1,3 +1,4 @@
+// === Retorna as Infos detalhadas do Livro em questão ===
 // /api/books/48b86ac2-014e-401d-bcbb-331ce5f4a457
 
 import { prisma } from '@/lib/prisma'

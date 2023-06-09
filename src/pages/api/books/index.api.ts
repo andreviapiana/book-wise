@@ -1,7 +1,10 @@
+// === Retorna TODOS os livros ===
 // /api/books
 
 import { prisma } from '@/lib/prisma'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from 'next-auth'
+import { buildNextAuthOptions } from '../auth/[...nextauth].api'
 
 export default async function handler(
   req: NextApiRequest,
@@ -49,6 +52,28 @@ export default async function handler(
     }
   })
 
+  let userBooksIds: string[] = []
+
+  const session = await getServerSession(
+    req,
+    res,
+    buildNextAuthOptions(req, res),
+  )
+
+  if (session) {
+    const userBooks = await prisma.book.findMany({
+      where: {
+        ratings: {
+          some: {
+            user_id: String(session?.user?.id),
+          },
+        },
+      },
+    })
+
+    userBooksIds = userBooks?.map((x) => x?.id)
+  }
+
   const booksWithRating = booksFixedRelationWithCategory.map((book) => {
     const avgRate =
       book.ratings.reduce((sum, rateObj) => {
@@ -58,6 +83,7 @@ export default async function handler(
     return {
       ...book,
       rating: avgRate,
+      alreadyRead: userBooksIds.includes(book.id),
     }
   })
 
