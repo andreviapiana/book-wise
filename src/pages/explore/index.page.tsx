@@ -21,6 +21,7 @@ import { buildNextAuthOptions } from '../api/auth/[...nextauth].api'
 import { GetServerSideProps } from 'next'
 
 import { BookWithRatingAndCategories } from '../home/index.page'
+import { NextSeo } from 'next-seo'
 
 export interface ExploreProps {
   categories: Category[]
@@ -71,59 +72,62 @@ export default function Explore({ categories, books }: ExploreProps) {
   }
 
   return (
-    <Template>
-      {sidebarShouldBeOpen && (
-        <LateralMenu handleCloseMenu={deselectBook} book={selectedBook} />
-      )}
-      <Title>
-        <div className="title">
-          <ChartLineUp size={32} />
-          <h2>Explorar</h2>
-        </div>
-        <SearchInput
-          placeholder="Buscar livro ou autor"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        >
-          <MagnifyingGlass size={20} />
-        </SearchInput>
-      </Title>
-
-      <CenterContainer>
-        <FilterContainer>
-          <ButtonFilter
-            selected={!categorySelected}
-            onClick={() => selectCategory(null)}
+    <>
+      <NextSeo title="Explorar | Book Wise" />
+      <Template>
+        {sidebarShouldBeOpen && (
+          <LateralMenu handleCloseMenu={deselectBook} book={selectedBook} />
+        )}
+        <Title>
+          <div className="title">
+            <ChartLineUp size={32} />
+            <h2>Explorar</h2>
+          </div>
+          <SearchInput
+            placeholder="Buscar livro ou autor"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           >
-            Todos
-          </ButtonFilter>
+            <MagnifyingGlass size={20} />
+          </SearchInput>
+        </Title>
 
-          {categories.map((category) => (
+        <CenterContainer>
+          <FilterContainer>
             <ButtonFilter
-              key={category.id}
-              selected={categorySelected === category.id}
-              onClick={() => selectCategory(category.id)}
+              selected={!categorySelected}
+              onClick={() => selectCategory(null)}
             >
-              {category.name}
+              Todos
             </ButtonFilter>
-          ))}
-        </FilterContainer>
-        <CardsContainer>
-          {filteredBooks.map((book) => (
-            <PopularCard
-              key={book.id}
-              size="lg"
-              author={book.author}
-              name={book.name}
-              cover={book.cover_url}
-              rating={book.rating}
-              onClick={() => selectBook(book)}
-              alreadyRead={book.alreadyRead}
-            />
-          ))}
-        </CardsContainer>
-      </CenterContainer>
-    </Template>
+
+            {categories.map((category) => (
+              <ButtonFilter
+                key={category.id}
+                selected={categorySelected === category.id}
+                onClick={() => selectCategory(category.id)}
+              >
+                {category.name}
+              </ButtonFilter>
+            ))}
+          </FilterContainer>
+          <CardsContainer>
+            {filteredBooks.map((book) => (
+              <PopularCard
+                key={book.id}
+                size="lg"
+                author={book.author}
+                name={book.name}
+                cover={book.cover_url}
+                rating={book.rating}
+                onClick={() => selectBook(book)}
+                alreadyRead={book.alreadyRead}
+              />
+            ))}
+          </CardsContainer>
+        </CenterContainer>
+      </Template>
+    </>
   )
 }
 

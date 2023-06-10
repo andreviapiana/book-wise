@@ -40,6 +40,7 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 
 import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
+import { NextSeo } from 'next-seo'
 
 interface ProfileProps {
   infos: {
@@ -86,105 +87,108 @@ export default function Profile({ infos, ratings, user }: ProfileProps) {
   })
 
   return (
-    <Template>
-      <Title>
-        {session.data?.user.id === user.id ? (
-          <>
-            <User size={32} />
-            <h2>Perfil</h2>
-          </>
-        ) : (
-          <Link href={'/home'}>
-            <CaretLeft size={20} />
-            <h4>Voltar</h4>
-          </Link>
-        )}
-      </Title>
+    <>
+      <NextSeo title="Perfil | Book Wise" />
+      <Template>
+        <Title>
+          {session.data?.user.id === user.id ? (
+            <>
+              <User size={32} />
+              <h2>Perfil</h2>
+            </>
+          ) : (
+            <Link href={'/home'}>
+              <CaretLeft size={20} />
+              <h4>Voltar</h4>
+            </Link>
+          )}
+        </Title>
 
-      <MainContainer>
-        <CenterContainer>
-          <SearchInput
-            placeholder="Buscar livro ou autor"
-            size={'md'}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          >
-            <MagnifyingGlass size={20} />
-          </SearchInput>
+        <MainContainer>
+          <CenterContainer>
+            <SearchInput
+              placeholder="Buscar livro ou autor"
+              size={'md'}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            >
+              <MagnifyingGlass size={20} />
+            </SearchInput>
 
-          <CardsContainer>
-            {filteredBooks.length > 0 ? (
-              <CardWrapper>
-                {filteredBooks.map((rating) => (
-                  <ProfileCard
-                    key={rating.id}
-                    book={rating.book}
-                    rating={rating}
-                  />
-                ))}
-              </CardWrapper>
-            ) : (
-              <CardWrapper>
-                <EmptyCard />
-              </CardWrapper>
-            )}
-          </CardsContainer>
-        </CenterContainer>
+            <CardsContainer>
+              {filteredBooks.length > 0 ? (
+                <CardWrapper>
+                  {filteredBooks.map((rating) => (
+                    <ProfileCard
+                      key={rating.id}
+                      book={rating.book}
+                      rating={rating}
+                    />
+                  ))}
+                </CardWrapper>
+              ) : (
+                <CardWrapper>
+                  <EmptyCard />
+                </CardWrapper>
+              )}
+            </CardsContainer>
+          </CenterContainer>
 
-        <RightContainer>
-          <ImageWrapper>
-            <Image
-              width={70}
-              height={70}
-              src={user.avatar_url}
-              alt=""
-              style={{
-                objectFit: 'cover',
-                overflow: 'hidden',
-                borderRadius: 9999,
-              }}
-            />
-          </ImageWrapper>
-          <p>{user.name}</p>
-          <time title={dateFormatted} dateTime={dateString}>
-            membro(a) {dateRelativeToNow}
-          </time>
-          <Line />
-          <UserStats>
-            <UserNumber>
-              <BookOpen size={32} />
-              <div>
-                <h5>{infos.pages}</h5>
-                <span>Páginas lidas </span>
-              </div>
-            </UserNumber>
-            <UserNumber>
-              <Books size={32} />
-              <div>
-                <h5>{infos.booksCount}</h5>
-                <span>Livros avaliados </span>
-              </div>
-            </UserNumber>
-            <UserNumber>
-              <UserList size={32} />
-              <div>
-                <h5>{infos.authorsCount}</h5>
-                <span>Autores lidos </span>
-              </div>
-            </UserNumber>
-            {infos.bestGenre && (
+          <RightContainer>
+            <ImageWrapper>
+              <Image
+                width={70}
+                height={70}
+                src={user.avatar_url}
+                alt=""
+                style={{
+                  objectFit: 'cover',
+                  overflow: 'hidden',
+                  borderRadius: 9999,
+                }}
+              />
+            </ImageWrapper>
+            <p>{user.name}</p>
+            <time title={dateFormatted} dateTime={dateString}>
+              membro(a) {dateRelativeToNow}
+            </time>
+            <Line />
+            <UserStats>
               <UserNumber>
-                <BookmarkSimple size={32} />
+                <BookOpen size={32} />
                 <div>
-                  <h5>{infos.bestGenre.name}</h5>
-                  <span>Categoria mais lida </span>
+                  <h5>{infos.pages}</h5>
+                  <span>Páginas lidas </span>
                 </div>
               </UserNumber>
-            )}
-          </UserStats>
-        </RightContainer>
-      </MainContainer>
-    </Template>
+              <UserNumber>
+                <Books size={32} />
+                <div>
+                  <h5>{infos.booksCount}</h5>
+                  <span>Livros avaliados </span>
+                </div>
+              </UserNumber>
+              <UserNumber>
+                <UserList size={32} />
+                <div>
+                  <h5>{infos.authorsCount}</h5>
+                  <span>Autores lidos </span>
+                </div>
+              </UserNumber>
+              {infos.bestGenre && (
+                <UserNumber>
+                  <BookmarkSimple size={32} />
+                  <div>
+                    <h5>{infos.bestGenre.name}</h5>
+                    <span>Categoria mais lida </span>
+                  </div>
+                </UserNumber>
+              )}
+            </UserStats>
+          </RightContainer>
+        </MainContainer>
+      </Template>
+    </>
   )
 }
 

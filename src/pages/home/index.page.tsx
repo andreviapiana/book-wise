@@ -20,6 +20,7 @@ import { useSession } from 'next-auth/react'
 import { getServerSession } from 'next-auth'
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api'
 import { GetServerSideProps } from 'next'
+import { NextSeo } from 'next-seo'
 
 export interface BookWithRatingAndCategories extends Book {
   categories: Category[]
@@ -43,73 +44,77 @@ interface HomeProps {
 export default function Home({ ratings, books, userLastRating }: HomeProps) {
   const session = useSession()
   return (
-    <Template>
-      <Title>
-        <ChartLineUp size={32} />
-        <h2>Início</h2>
-      </Title>
+    <>
+      <NextSeo title="Início | Book Wise" />
 
-      <HomeContainer>
-        <CenterContainer>
-          {session.data?.user && (
-            <>
-              {userLastRating ? (
-                <>
-                  <Subtitle>
-                    <span>Sua última leitura</span>
-                    <Link href={`/profile/${session.data.user.id}`}>
-                      Ver todas
-                      <CaretRight size={16} />
-                    </Link>
-                  </Subtitle>
-                  <RecentReadCard
-                    key={userLastRating.id}
-                    rating={userLastRating}
-                    book={userLastRating.book}
-                  />
-                </>
-              ) : (
-                <>
-                  <Subtitle>
-                    <span>Sua última leitura</span>
-                  </Subtitle>
-                  <EmptyCard />
-                </>
-              )}
-            </>
-          )}
+      <Template>
+        <Title>
+          <ChartLineUp size={32} />
+          <h2>Início</h2>
+        </Title>
 
-          <Subtitle>
-            <span>Avaliações mais recentes</span>
-          </Subtitle>
+        <HomeContainer>
+          <CenterContainer>
+            {session.data?.user && (
+              <>
+                {userLastRating ? (
+                  <>
+                    <Subtitle>
+                      <span>Sua última leitura</span>
+                      <Link href={`/profile/${session.data.user.id}`}>
+                        Ver todas
+                        <CaretRight size={16} />
+                      </Link>
+                    </Subtitle>
+                    <RecentReadCard
+                      key={userLastRating.id}
+                      rating={userLastRating}
+                      book={userLastRating.book}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Subtitle>
+                      <span>Sua última leitura</span>
+                    </Subtitle>
+                    <EmptyCard />
+                  </>
+                )}
+              </>
+            )}
 
-          {ratings.map((rating) => (
-            <ReviewCard key={rating.id} rating={rating} />
-          ))}
-        </CenterContainer>
+            <Subtitle>
+              <span>Avaliações mais recentes</span>
+            </Subtitle>
 
-        <RightContainer>
-          <Subtitle>
-            <span>Livros Populares</span>
-            <Link href={'/explore'}>
-              Ver todos
-              <CaretRight size={16} />
-            </Link>
-          </Subtitle>
-          {books.map((book) => (
-            <PopularCard
-              key={book.id}
-              size="sm"
-              author={book.author}
-              name={book.name}
-              cover={book.cover_url}
-              rating={book.rating}
-              alreadyRead={book.alreadyRead}
-            />
-          ))}
-        </RightContainer>
-      </HomeContainer>
-    </Template>
+            {ratings.map((rating) => (
+              <ReviewCard key={rating.id} rating={rating} />
+            ))}
+          </CenterContainer>
+
+          <RightContainer>
+            <Subtitle>
+              <span>Livros Populares</span>
+              <Link href={'/explore'}>
+                Ver todos
+                <CaretRight size={16} />
+              </Link>
+            </Subtitle>
+            {books.map((book) => (
+              <PopularCard
+                key={book.id}
+                size="sm"
+                author={book.author}
+                name={book.name}
+                cover={book.cover_url}
+                rating={book.rating}
+                alreadyRead={book.alreadyRead}
+              />
+            ))}
+          </RightContainer>
+        </HomeContainer>
+      </Template>
+    </>
   )
 }
 

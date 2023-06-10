@@ -6,6 +6,7 @@ import { SessionProvider } from 'next-auth/react'
 
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { DefaultSeo } from 'next-seo'
 
 globalStyles()
 
@@ -15,6 +16,14 @@ export default function App({
 }: AppProps) {
   return (
     <SessionProvider session={session}>
+      <DefaultSeo
+        openGraph={{
+          type: 'website',
+          locale: 'pt_BR',
+          url: 'https://book-wis3.netlify.app/',
+          siteName: 'Book Wise',
+        }}
+      />
       <Component {...pageProps} />
       <ToastContainer theme="dark" />
     </SessionProvider>
