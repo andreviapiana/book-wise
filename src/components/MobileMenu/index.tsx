@@ -82,7 +82,7 @@ export function MobileMenu() {
               <InfosWrapper>
                 <ImageWrapper>
                   <Image
-                    src={session.data.user?.image || avatarPlaceholder}
+                    src={session.data.user?.avatar_url || avatarPlaceholder}
                     alt=""
                     width={32}
                     height={32}
