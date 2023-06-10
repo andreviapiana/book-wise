@@ -36,6 +36,11 @@ export const Title = styled('div', {
     marginRight: 'auto',
   },
 
+  a: {
+    display: 'flex',
+    gap: '$3',
+  },
+
   svg: {
     color: '$green100',
   },

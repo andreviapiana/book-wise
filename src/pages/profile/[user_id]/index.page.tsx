@@ -1,12 +1,3 @@
-import { SearchInput } from '@/components/SearchInput'
-import {
-  User,
-  MagnifyingGlass,
-  Books,
-  UserList,
-  BookmarkSimple,
-  BookOpen,
-} from 'phosphor-react'
 import Template from '../../template'
 import {
   Title,
@@ -20,8 +11,21 @@ import {
   UserStats,
   CardsContainer,
 } from './styles'
-import Image from 'next/image'
+import {
+  User,
+  MagnifyingGlass,
+  Books,
+  UserList,
+  BookmarkSimple,
+  BookOpen,
+  CaretLeft,
+} from 'phosphor-react'
 
+import { SearchInput } from '@/components/SearchInput'
+import EmptyCard from '@/components/EmptyCard'
+import ProfileCard from '@/components/ProfileCard'
+
+import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
 import {
   Book,
@@ -32,7 +36,9 @@ import {
 } from '@prisma/client'
 import { GetServerSideProps } from 'next'
 import { useState } from 'react'
-import ProfileCard from '@/components/ProfileCard'
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+
 import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
 
 interface ProfileProps {
@@ -61,6 +67,8 @@ interface ProfileProps {
 }
 
 export default function Profile({ infos, ratings, user }: ProfileProps) {
+  const session = useSession()
+
   const { dateFormatted, dateRelativeToNow, dateString } =
     getDateFormattedAndRelative(user.created_at)
 
@@ -80,8 +88,17 @@ export default function Profile({ infos, ratings, user }: ProfileProps) {
   return (
     <Template>
       <Title>
-        <User size={32} />
-        <h2>Perfil</h2>
+        {session.data?.user.id === user.id ? (
+          <>
+            <User size={32} />
+            <h2>Perfil</h2>
+          </>
+        ) : (
+          <Link href={'/home'}>
+            <CaretLeft size={20} />
+            <h4>Voltar</h4>
+          </Link>
+        )}
       </Title>
 
       <MainContainer>
@@ -96,15 +113,21 @@ export default function Profile({ infos, ratings, user }: ProfileProps) {
           </SearchInput>
 
           <CardsContainer>
-            <CardWrapper>
-              {filteredBooks.map((rating) => (
-                <ProfileCard
-                  key={rating.id}
-                  book={rating.book}
-                  rating={rating}
-                />
-              ))}
-            </CardWrapper>
+            {filteredBooks.length > 0 ? (
+              <CardWrapper>
+                {filteredBooks.map((rating) => (
+                  <ProfileCard
+                    key={rating.id}
+                    book={rating.book}
+                    rating={rating}
+                  />
+                ))}
+              </CardWrapper>
+            ) : (
+              <CardWrapper>
+                <EmptyCard />
+              </CardWrapper>
+            )}
           </CardsContainer>
         </CenterContainer>
 
@@ -149,13 +172,15 @@ export default function Profile({ infos, ratings, user }: ProfileProps) {
                 <span>Autores lidos </span>
               </div>
             </UserNumber>
-            <UserNumber>
-              <BookmarkSimple size={32} />
-              <div>
-                <h5>{infos.bestGenre.name}</h5>
-                <span>Categoria mais lida </span>
-              </div>
-            </UserNumber>
+            {infos.bestGenre && (
+              <UserNumber>
+                <BookmarkSimple size={32} />
+                <div>
+                  <h5>{infos.bestGenre.name}</h5>
+                  <span>Categoria mais lida </span>
+                </div>
+              </UserNumber>
+            )}
           </UserStats>
         </RightContainer>
       </MainContainer>
@@ -173,6 +198,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       },
       include: {
         ratings: {
+          orderBy: {
+            created_at: 'desc',
+          },
           include: {
             book: {
               include: {
@@ -221,7 +249,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       pages,
       booksCount: books.length,
       authorsCount: uniqueAuthors.length,
-      bestGenre: genreNumbers[0],
+      bestGenre: genreNumbers[0] ? genreNumbers[0] : null,
     }
 
     return {
