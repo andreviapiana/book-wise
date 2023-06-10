@@ -5,18 +5,20 @@ import google from '@/../public/google.svg'
 import github from '@/../public/github.svg'
 import { Portal } from '../Portal'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 interface LoginModalProps {
   onClose: () => void
 }
 
 export function LoginModal({ onClose }: LoginModalProps) {
-  async function handleSignIn(provider: string) {
-    if (provider === 'google') {
-      await signIn('google', { callbackUrl: '/home' })
-    } else if (provider === 'github') {
-      await signIn('github', { callbackUrl: '/home' })
-    }
+  const router = useRouter()
+  const currentPath = router.asPath
+
+  const callbackUrl = currentPath === '/login' ? '/' : currentPath
+
+  function handleSignIn(provider: string) {
+    signIn(provider, { callbackUrl })
   }
 
   return (
