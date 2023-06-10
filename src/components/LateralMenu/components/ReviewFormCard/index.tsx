@@ -1,5 +1,3 @@
-import Image from 'next/image'
-import { Check, Star, X, CircleNotch } from 'phosphor-react'
 import {
   ButtonsContainer,
   ActionButton,
@@ -12,6 +10,9 @@ import {
   FormErrors,
   Loading,
 } from './styles'
+import { Check, Star, X, CircleNotch } from 'phosphor-react'
+
+import Image from 'next/image'
 import { useState } from 'react'
 import { Rating } from 'react-simple-star-rating'
 import { useSession } from 'next-auth/react'
@@ -77,7 +78,7 @@ export function ReviewFormCard({
 
   // Envio do Formulário
   async function handleCreateRating(data: CreateRatingFormData) {
-    await api.post(`/ratings/`, {
+    await api.post(`/ratings/${bookId}`, {
       rate: data.rate,
       description: data.description,
       userId,

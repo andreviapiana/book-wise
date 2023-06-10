@@ -1,10 +1,3 @@
-import { ButtonFilter } from '@/components/ButtonFilter'
-import PopularCard from '@/components/PopularCard'
-import { SearchInput } from '@/components/SearchInput'
-import { Book, Category } from '@prisma/client'
-import { prisma } from '@/lib/prisma'
-import { ChartLineUp, MagnifyingGlass } from 'phosphor-react'
-import React, { useState } from 'react'
 import Template from '../template'
 import {
   Title,
@@ -12,14 +5,22 @@ import {
   FilterContainer,
   CardsContainer,
 } from './styles'
-import { api } from '@/lib/axios'
+import { ChartLineUp, MagnifyingGlass } from 'phosphor-react'
+
+import { ButtonFilter } from '@/components/ButtonFilter'
+import PopularCard from '@/components/PopularCard'
+import { SearchInput } from '@/components/SearchInput'
 import { LateralMenu } from '@/components/LateralMenu'
 
-export interface BookWithRatingAndCategories extends Book {
-  rating: number
-  categories: Category[]
-  ratings: any[]
-}
+import { prisma } from '@/lib/prisma'
+import { Category } from '@prisma/client'
+import React, { useState } from 'react'
+import { api } from '@/lib/axios'
+import { getServerSession } from 'next-auth'
+import { buildNextAuthOptions } from '../api/auth/[...nextauth].api'
+import { GetServerSideProps } from 'next'
+
+import { BookWithRatingAndCategories } from '../home/index.page'
 
 export interface ExploreProps {
   categories: Category[]
@@ -27,11 +28,11 @@ export interface ExploreProps {
 }
 
 export default function Explore({ categories, books }: ExploreProps) {
+  // Carregamento de todos os Livros
   const [booksList, setBooksList] =
     useState<BookWithRatingAndCategories[]>(books)
 
-  const [search, setSearch] = useState('')
-
+  // Filtragem dos livros pela categoria no ButtonFilter
   const [categorySelected, setCategorySelected] = useState<string | null>(null)
 
   async function selectCategory(categoryId: string | null) {
@@ -43,6 +44,8 @@ export default function Explore({ categories, books }: ExploreProps) {
     setCategorySelected(categoryId)
   }
 
+  // Filtragem pelo nome dos livros/autores no SearchInput
+  const [search, setSearch] = useState('')
   const filteredBooks = booksList?.filter((book) => {
     return (
       book.name
@@ -54,6 +57,7 @@ export default function Explore({ categories, books }: ExploreProps) {
     )
   })
 
+  // Abertura do LateralMenu ao selecionar um livro
   const [selectedBook, setSelectedBook] =
     useState<BookWithRatingAndCategories | null>(null)
   const sidebarShouldBeOpen = !!selectedBook
@@ -72,10 +76,10 @@ export default function Explore({ categories, books }: ExploreProps) {
         <LateralMenu handleCloseMenu={deselectBook} book={selectedBook} />
       )}
       <Title>
-<div className="title">
-  <ChartLineUp size={32} />
-  <h2>Explorar</h2>
-</div>
+        <div className="title">
+          <ChartLineUp size={32} />
+          <h2>Explorar</h2>
+        </div>
         <SearchInput
           placeholder="Buscar livro ou autor"
           value={search}
@@ -114,6 +118,7 @@ export default function Explore({ categories, books }: ExploreProps) {
               cover={book.cover_url}
               rating={book.rating}
               onClick={() => selectBook(book)}
+              alreadyRead={book.alreadyRead}
             />
           ))}
         </CardsContainer>
@@ -122,8 +127,17 @@ export default function Explore({ categories, books }: ExploreProps) {
   )
 }
 
-export async function getStaticProps() {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  // Capturando as infos da Sessão
+  const session = await getServerSession(
+    req,
+    res,
+    buildNextAuthOptions(req, res),
+  )
+  // Buscando as Categorias
   const categories = await prisma.category.findMany()
+
+  // Buscando os Livros com as Notas + Categoria
   const books = await prisma.book.findMany({
     include: {
       ratings: {
@@ -140,6 +154,7 @@ export async function getStaticProps() {
     },
   })
 
+  // Retornando os Livros com a Categoria(para poder filtrar)
   const booksFixedRelationWithCategory = books.map((book) => {
     return {
       ...book,
@@ -147,6 +162,24 @@ export async function getStaticProps() {
     }
   })
 
+  // Verificando se um livro foi lido pelo Usuário logado
+  let userBooksIds: string[] = []
+
+  if (session) {
+    const userBooks = await prisma.book.findMany({
+      where: {
+        ratings: {
+          some: {
+            user_id: String(session?.user?.id),
+          },
+        },
+      },
+    })
+
+    userBooksIds = userBooks?.map((x) => x?.id)
+  }
+
+  // Retornando os Livros(com a categoria) + Nota Média + Verificação de Leitura
   const booksWithRating = booksFixedRelationWithCategory.map((book) => {
     const avgRate =
       book.ratings.reduce((sum, rateObj) => {
@@ -156,15 +189,16 @@ export async function getStaticProps() {
     return {
       ...book,
       rating: avgRate,
+      alreadyRead: userBooksIds.includes(book.id),
     }
   })
 
+  // Retorno final dos Livros(livros|categoria|nota média|verificação de leitura) + Categorias(para os botões de filtragem)
   return {
     props: {
       // https://stackoverflow.com/a/72837265/6727029
       categories: JSON.parse(JSON.stringify(categories)),
       books: JSON.parse(JSON.stringify(booksWithRating)),
     },
-    revalidate: 60 * 60 * 24 * 1, // 1 day
   }
 }

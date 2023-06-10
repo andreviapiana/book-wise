@@ -1,6 +1,3 @@
-import { StarsRating } from '@/components/StarsRating'
-import Image from 'next/image'
-import { BookmarkSimple, BookOpen } from 'phosphor-react'
 import {
   BookContainer,
   BookNumber,
@@ -9,7 +6,12 @@ import {
   Info,
   Number,
 } from './styles'
-import { BookWithRatingAndCategories } from '@/pages/explore/index.page'
+import { BookmarkSimple, BookOpen } from 'phosphor-react'
+
+import { StarsRating } from '@/components/StarsRating'
+import Image from 'next/image'
+
+import { BookWithRatingAndCategories } from '@/pages/home/index.page'
 
 interface BookCardProps {
   book: BookWithRatingAndCategories
@@ -45,7 +47,7 @@ export function BookCard({ book }: BookCardProps) {
           <BookmarkSimple size={32} />
           <div>
             <h5>Categoria</h5>
-            {book.categories.map((category, index) => (
+            {book.categories?.map((category, index) => (
               <span key={category.id}>
                 {(index ? ', ' : '') + category.name}
               </span>

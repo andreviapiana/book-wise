@@ -1,7 +1,9 @@
+import { Container, Header, User } from './styles'
+
 import { StarsRating } from '@/components/StarsRating'
 import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
 import Image from 'next/image'
-import { Container, Header, User } from './styles'
+import Link from 'next/link'
 
 interface RatingCardProps {
   avatar: string | null
@@ -9,7 +11,7 @@ interface RatingCardProps {
   date: Date
   description: string
   rate: number
-  rating: any
+  user: string
 }
 
 export function RatingCard({
@@ -18,7 +20,7 @@ export function RatingCard({
   date,
   description,
   rate,
-  rating,
+  user,
 }: RatingCardProps) {
   const { dateFormatted, dateRelativeToNow, dateString } =
     getDateFormattedAndRelative(date)
@@ -27,15 +29,17 @@ export function RatingCard({
     <Container>
       <Header>
         <User>
-          <Image
-            src={avatar}
-            alt=""
-            width="40"
-            height="40"
-            style={{
-              objectFit: 'cover',
-            }}
-          />
+          <Link href={`/profile/${user}`}>
+            <Image
+              src={avatar}
+              alt=""
+              width="40"
+              height="40"
+              style={{
+                objectFit: 'cover',
+              }}
+            />
+          </Link>
           <div>
             <h5>{name}</h5>
             <time title={dateFormatted} dateTime={dateString}>

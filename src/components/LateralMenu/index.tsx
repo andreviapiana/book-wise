@@ -1,6 +1,3 @@
-import { X } from 'phosphor-react'
-import { BookCard } from './components/BookCard'
-import { RatingCard } from './components/RatingCard'
 import {
   CloseButton,
   Container,
@@ -9,20 +6,26 @@ import {
   SideMenu,
   Title,
 } from './styles'
-import { BookWithRatingAndCategories } from '@/pages/explore/index.page'
+import { X } from 'phosphor-react'
+
+import { BookCard } from './components/BookCard'
+import { RatingCard } from './components/RatingCard'
+import { LoginModal } from '../LoginModal'
+import { ReviewFormCard } from './components/ReviewFormCard'
+
 import { useEffect, useState } from 'react'
 import { Rating as RatingInfo, User as UserPrisma } from '@prisma/client'
 import { api } from '@/lib/axios'
-import { LoginModal } from '../LoginModal'
-import { ReviewFormCard } from './components/ReviewFormCard'
 import { useSession } from 'next-auth/react'
+
+import { BookWithRatingAndCategories } from '@/pages/home/index.page'
 
 interface BookReviewsSidebarProps {
   handleCloseMenu(): void
   book: BookWithRatingAndCategories
 }
 
-type RatingProps = RatingInfo & {
+interface RatingProps extends RatingInfo {
   user: UserPrisma
 }
 
@@ -32,11 +35,10 @@ export function LateralMenu({
 }: BookReviewsSidebarProps) {
   const session = useSession()
 
-  const [ratings, setRatings] = useState<RatingProps[] | null>(null)
+  const [ratings, setRatings] = useState<RatingProps[]>([])
 
   useEffect(() => {
     async function loadRatings() {
-      // await new Promise((resolve) => setTimeout(resolve, 2000))
       const response = await api.get(`/books/${book.id}`)
       if (response.data) {
         setRatings(response.data.book.ratings)
@@ -106,8 +108,8 @@ export function LateralMenu({
             name={rating.user.name}
             date={rating.created_at}
             rate={rating.rate}
-            rating={rating}
             description={rating.description}
+            user={rating.user_id}
           />
         ))}
       </SideMenu>
