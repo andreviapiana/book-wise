@@ -1,8 +1,3 @@
-import RecentReadCard from '@/components/RecentReadCard'
-import ReviewCard from '@/components/ReviewCard'
-import PopularCard from '@/components/PopularCard'
-import Link from 'next/link'
-import { CaretRight, ChartLineUp } from 'phosphor-react'
 import Template from '../template'
 import {
   Title,
@@ -11,31 +6,41 @@ import {
   Subtitle,
   RightContainer,
 } from './styles'
+import { CaretRight, ChartLineUp } from 'phosphor-react'
+
+import RecentReadCard from '@/components/RecentReadCard'
+import ReviewCard from '@/components/ReviewCard'
+import PopularCard from '@/components/PopularCard'
+import EmptyCard from '@/components/EmptyCard'
+
 import { prisma } from '@/lib/prisma'
+import Link from 'next/link'
 import { Book, Category, Rating, User } from '@prisma/client'
 import { useSession } from 'next-auth/react'
 import { getServerSession } from 'next-auth'
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api'
 import { GetServerSideProps } from 'next'
-import EmptyCard from '@/components/EmptyCard'
 
-interface BookWithRatingAndCategories extends Book {
-  rating: number
+export interface BookWithRatingAndCategories extends Book {
   categories: Category[]
+  rating: number
+  alreadyRead: boolean
+  ratings: Rating[]
 }
 
 export interface RatingWithUserAndBook extends Rating {
   user: User
   book: Book
+  alreadyRead: boolean
 }
 
 interface HomeProps {
   ratings: RatingWithUserAndBook[]
   books: BookWithRatingAndCategories[]
-  myLastRating: RatingWithUserAndBook | null
+  userLastRating: RatingWithUserAndBook
 }
 
-export default function Home({ ratings, books, myLastRating }: HomeProps) {
+export default function Home({ ratings, books, userLastRating }: HomeProps) {
   const session = useSession()
   return (
     <Template>
@@ -48,7 +53,7 @@ export default function Home({ ratings, books, myLastRating }: HomeProps) {
         <CenterContainer>
           {session.data?.user && (
             <>
-              {myLastRating ? (
+              {userLastRating ? (
                 <>
                   <Subtitle>
                     <span>Sua última leitura</span>
@@ -58,9 +63,9 @@ export default function Home({ ratings, books, myLastRating }: HomeProps) {
                     </Link>
                   </Subtitle>
                   <RecentReadCard
-                    key={myLastRating.id}
-                    rating={myLastRating}
-                    book={myLastRating.book}
+                    key={userLastRating.id}
+                    rating={userLastRating}
+                    book={userLastRating.book}
                   />
                 </>
               ) : (
@@ -79,12 +84,7 @@ export default function Home({ ratings, books, myLastRating }: HomeProps) {
           </Subtitle>
 
           {ratings.map((rating) => (
-            <ReviewCard
-              key={rating.id}
-              book={rating.book}
-              user={rating.user}
-              rating={rating}
-            />
+            <ReviewCard key={rating.id} rating={rating} />
           ))}
         </CenterContainer>
 
@@ -104,6 +104,7 @@ export default function Home({ ratings, books, myLastRating }: HomeProps) {
               name={book.name}
               cover={book.cover_url}
               rating={book.rating}
+              alreadyRead={book.alreadyRead}
             />
           ))}
         </RightContainer>
@@ -113,16 +114,18 @@ export default function Home({ ratings, books, myLastRating }: HomeProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  // Capturando as infos da Sessão
   const session = await getServerSession(
     req,
     res,
     buildNextAuthOptions(req, res),
   )
 
-  let myLastRating = null
+  // Buscando a última avaliação do usuário, caso exista
+  let userLastRating = null
 
   if (session?.user) {
-    myLastRating = await prisma.rating.findFirst({
+    userLastRating = await prisma.rating.findFirst({
       where: {
         user_id: session.user.id,
       },
@@ -136,6 +139,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     })
   }
 
+  // Buscando e filtrando os 4 livros mais populares
   const books = await prisma.book.findMany({
     include: {
       ratings: {
@@ -159,14 +163,33 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     },
   })
 
-  const booksFixedRelationWithCategory = books.map((book) => {
+  // Retornando os livros com a Categoria
+  const booksWithCategory = books.map((book) => {
     return {
       ...book,
       categories: book.categories.map((category) => category.category),
     }
   })
 
-  const booksWithRating = booksFixedRelationWithCategory.map((book) => {
+  // Verificando se um livro foi lido pelo Usuário logado
+  let userBooksIds: string[] = []
+
+  if (session) {
+    const userBooks = await prisma.book.findMany({
+      where: {
+        ratings: {
+          some: {
+            user_id: String(session?.user?.id),
+          },
+        },
+      },
+    })
+
+    userBooksIds = userBooks?.map((x) => x?.id)
+  }
+
+  // Retornando os Livros(com a categoria) + Nota Média + Verificação de Leitura
+  const booksWithRating = booksWithCategory.map((book) => {
     const avgRate =
       book.ratings.reduce((sum, rateObj) => {
         return sum + rateObj.rate
@@ -175,13 +198,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return {
       ...book,
       rating: avgRate,
+      alreadyRead: userBooksIds.includes(book.id),
     }
   })
 
+  // Buscando as 4 avaliações mais recentes(excluindo a avaliação mais recente do usuário)
   const ratings = await prisma.rating.findMany({
     where: {
       NOT: {
-        id: myLastRating?.id,
+        id: userLastRating?.id,
       },
     },
     include: {
@@ -194,12 +219,21 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     },
   })
 
+  // Incluindo a Verificação de Leitura nas 4 avaliações mais recentes
+  const ratingWithReadStatus = ratings.map((rating) => {
+    return {
+      ...rating,
+      alreadyRead: userBooksIds.includes(rating.book.id),
+    }
+  })
+
+  // Retorno final dos Livros(livros|categoria|nota média|verificação de leitura) + Últimas 4 Avaliações(com verificação de leitura) + Última avaliação do Usuário
   return {
     props: {
       // https://stackoverflow.com/a/72837265/6727029
       books: JSON.parse(JSON.stringify(booksWithRating)),
-      ratings: JSON.parse(JSON.stringify(ratings)),
-      myLastRating: JSON.parse(JSON.stringify(myLastRating)),
+      ratings: JSON.parse(JSON.stringify(ratingWithReadStatus)),
+      userLastRating: JSON.parse(JSON.stringify(userLastRating)),
     },
   }
 }

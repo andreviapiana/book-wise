@@ -1,6 +1,9 @@
 import { styled } from '@/styles/stitches.config'
+import Link from 'next/link'
 
 export const Container = styled('div', {
+  position: 'relative',
+
   display: 'flex',
   flexDirection: 'column',
 
@@ -18,7 +21,6 @@ export const Container = styled('div', {
 
   '&:hover': {
     border: '2px solid $gray600',
-    cursor: 'pointer',
   },
 })
 
@@ -67,7 +69,7 @@ export const Infos = styled('div', {
   },
 })
 
-export const ImageWrapper = styled('div', {
+export const ImageWrapper = styled(Link, {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -77,4 +79,21 @@ export const ImageWrapper = styled('div', {
 
   borderRadius: '$full',
   background: '$gradient-vertical',
+})
+
+export const ReadNotice = styled('div', {
+  display: 'flex',
+
+  position: 'absolute',
+  top: '-2px',
+  right: '-2px',
+
+  padding: '$1 $3',
+
+  fontSize: '$xs',
+
+  borderRadius: '0 $md 0 $sm',
+
+  backgroundColor: '$green300',
+  color: '$green100',
 })

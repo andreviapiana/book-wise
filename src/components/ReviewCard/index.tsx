@@ -4,31 +4,30 @@ import {
   ImageWrapper,
   Infos,
   InfosWrapper,
+  ReadNotice,
 } from './styles'
 import Image from 'next/image'
 import { StarsRating } from '../StarsRating'
 import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
 
-import { Book, Rating, User as UserPrisma } from '@prisma/client'
+import { RatingWithUserAndBook } from '@/pages/home/index.page'
 
-export interface CardProps {
-  user: UserPrisma
-  book: Book
-  rating: Rating
+interface ReviewCardProps {
+  rating: RatingWithUserAndBook
 }
 
-export default function ReviewCard({ user, book, rating }: CardProps) {
+export default function ReviewCard({ rating }: ReviewCardProps) {
   const { dateFormatted, dateRelativeToNow, dateString } =
     getDateFormattedAndRelative(rating.created_at)
 
   return (
     <Container>
       <CardHeader>
-        <ImageWrapper>
+        <ImageWrapper href={`/profile/${rating.user.id}`}>
           <Image
             width={40}
             height={40}
-            src={user.avatar_url}
+            src={rating.user.avatar_url}
             alt=""
             style={{
               objectFit: 'cover',
@@ -39,7 +38,7 @@ export default function ReviewCard({ user, book, rating }: CardProps) {
         </ImageWrapper>
 
         <Infos>
-          <>{user?.name}</>
+          <>{rating.user.name}</>
           <time title={dateFormatted} dateTime={dateString}>
             {dateRelativeToNow}
           </time>
@@ -49,10 +48,20 @@ export default function ReviewCard({ user, book, rating }: CardProps) {
       </CardHeader>
 
       <InfosWrapper>
-        <Image width={108} height={152} src={`/${book.cover_url}`} alt="" />
+        {rating.alreadyRead && (
+          <ReadNotice>
+            <p>LIDO</p>
+          </ReadNotice>
+        )}
+        <Image
+          width={108}
+          height={152}
+          src={`/${rating.book.cover_url}`}
+          alt=""
+        />
         <Infos>
-          <strong>{book.name}</strong>
-          <span>{book.author}</span>
+          <strong>{rating.book.name}</strong>
+          <span>{rating.book.author}</span>
           <p>{rating.description}</p>
         </Infos>
       </InfosWrapper>
