@@ -139,7 +139,7 @@ export default function Profile({ infos, ratings, user }: ProfileProps) {
               <Image
                 width={70}
                 height={70}
-                src={user.avatar_url}
+                src={`${user.avatar_url}`}
                 alt=""
                 style={{
                   objectFit: 'cover',

@@ -31,7 +31,7 @@ export function RatingCard({
         <User>
           <Link href={`/profile/${user}`}>
             <Image
-              src={avatar}
+              src={`${avatar}`}
               alt=""
               width="40"
               height="40"

@@ -8,9 +8,9 @@ import {
   Preview,
 } from './styles'
 
-import loginBackgroundImage from '../../../public/background.svg'
-import google from '../../../public/google.svg'
-import github from '../../../public/github.svg'
+import loginBackgroundImage from '@/../public/background.svg'
+import google from '@/../public/google.svg'
+import github from '@/../public/github.svg'
 import { RocketLaunch } from 'phosphor-react'
 import logoImg from '@/../public/logo.svg'
 import { signIn } from 'next-auth/react'

@@ -132,7 +132,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   if (session?.user) {
     userLastRating = await prisma.rating.findFirst({
       where: {
-        user_id: session.user.id,
+        user_id: String(session?.user?.id),
       },
       include: {
         user: true,
