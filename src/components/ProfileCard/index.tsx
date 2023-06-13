@@ -9,19 +9,19 @@ import {
 } from './styles'
 import Image from 'next/image'
 import { StarsRating } from '../StarsRating'
-import { Book, Rating } from '@prisma/client'
+import { Book } from '@prisma/client'
 import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
+import { RatingWithUserAndBook } from '@/pages/home/index.page'
 
 interface ProfileCardProps {
   book: Book
-  rating: Rating
+  rating: RatingWithUserAndBook
 }
 
 export default function PopularCard({ book, rating }: ProfileCardProps) {
   const { dateFormatted, dateRelativeToNow, dateString } =
     getDateFormattedAndRelative(rating.created_at)
 
-  const isFinished = true
   return (
     <Container>
       <time title={dateFormatted} dateTime={dateString}>
@@ -38,7 +38,7 @@ export default function PopularCard({ book, rating }: ProfileCardProps) {
           />
 
           <InfosWrapper>
-            {isFinished && (
+            {rating.alreadyRead && (
               <ReadNotice>
                 <p>LIDO</p>
               </ReadNotice>

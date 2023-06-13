@@ -41,6 +41,7 @@ import Link from 'next/link'
 
 import { getDateFormattedAndRelative } from '@/utils/timeFormatter'
 import { NextSeo } from 'next-seo'
+import { RatingWithUserAndBook } from '@/pages/home/index.page'
 
 interface ProfileProps {
   infos: {
@@ -50,7 +51,7 @@ interface ProfileProps {
     bestGenre: Category
   }
   user: UserPrisma & {
-    ratings: (Rating & {
+    ratings: (RatingWithUserAndBook & {
       book: Book & {
         categories: (CategoriesOnBooks & {
           category: Category
@@ -59,6 +60,8 @@ interface ProfileProps {
     })[]
   }
   ratings: (Rating & {
+    alreadyRead: boolean
+    user: UserPrisma
     book: Book & {
       categories: (CategoriesOnBooks & {
         category: Category
