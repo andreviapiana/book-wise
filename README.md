@@ -70,6 +70,9 @@ $ cd book-wise
 # Instale as dependências necessárias
 $ npm install
 
+# Mude para o commit que contém o servidor local em SQLite
+$ git checkout 4097adcddd54664084c5e1182f7af242332ddfc5
+
 # Renomeie o arquivo .env.example para .env e adicione as informações necessárias nele
 
 # Agora inicie o servidor do FrontEnd
