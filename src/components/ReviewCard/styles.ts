@@ -22,6 +22,10 @@ export const Container = styled('div', {
   '&:hover': {
     border: '2px solid $gray600',
   },
+
+  '@media (max-width: 1200px)': {
+    height: '100%',
+  },
 })
 
 export const CardHeader = styled('div', {
@@ -34,6 +38,19 @@ export const CardHeader = styled('div', {
   'div:nth-child(3)': {
     marginLeft: 'auto',
   },
+
+  '@media (max-width: 1200px)': {
+    display: 'flex',
+
+    flexDirection: 'column',
+
+    margin: 'auto',
+    alignItems: 'center',
+
+    'div:nth-child(3)': {
+      margin: 'auto',
+    },
+  },
 })
 
 export const InfosWrapper = styled('div', {
@@ -42,6 +59,15 @@ export const InfosWrapper = styled('div', {
   height: '100%',
 
   gap: '$5',
+
+  '@media (max-width: 1200px)': {
+    display: 'flex',
+
+    flexDirection: 'column',
+
+    margin: 'auto',
+    alignItems: 'center',
+  },
 })
 
 export const Infos = styled('div', {
@@ -66,6 +92,14 @@ export const Infos = styled('div', {
     marginTop: '$4',
 
     overflow: 'overlay',
+  },
+
+  '@media (max-width: 1200px)': {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    textAlign: 'center',
   },
 })
 

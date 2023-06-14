@@ -16,11 +16,13 @@ ___
 ## 💻 Sobre
 O Book Wise é uma aplicação para o usuário realizar a avaliação de livros. Nela o usuário poderá criar a sua avaliação para os livros disponíveis.
 
-A aplicação possuí um Banco de Dados próprio, com uma lista de livros pré-cadastrada. Para criar avaliações, o usuário deve fazer Login, sendo possível realizar ele com o Google ou com o GitHub. No primeiro Login, o usuário será cadastrado automaticamente no Banco. Nos demais logins, as infos do usuário já serão carregadas diretamente deste Banco. Obs.: O Database está hospedado no DBHub.io. Por ser um serviço gratuito, o Banco irá resetar após alguns minutos de inatividade, portanto apenas os usuários e as avaliações originais irão permanecer.
+A aplicação possuí um Banco de Dados próprio em MySQL, com uma lista de livros pré-cadastrada. Para criar avaliações, o usuário deve fazer Login, sendo possível realizar ele com o Google ou com o GitHub. No primeiro Login, o usuário será cadastrado automaticamente no Banco. Nos demais logins, as infos do usuário já serão carregadas diretamente deste Banco. Obs.: O Database está hospedado no PlanetScale. Por ser um serviço gratuito, o Banco poderá demorar alguns segundos para iniciar, e também poderá resetar após alguns minutos de inatividade, portanto apenas os usuários e as avaliações originais irão permanecer.
 
 O projeto foi criado utilizando o Next.js, e seu foco é na renderização pelo lado do servidor (SSR), aumentando a performance com um carregamento da página de forma mais eficiente.
 
 A página possuí responsividade, se adaptado aos dispositivos mobile, e ainda foram realizadas otimizações de SEO para melhorar a indexação da página pelos bots.
+
+Fique à vontade para fazer Login na aplicação e cadastrar alguma avaliação de teste para ver o seu funcionamento. Existem Cards de leitura mais recente e avisos de criação de avaliação que só aparecem se você estiver logado!
 
 ___
 

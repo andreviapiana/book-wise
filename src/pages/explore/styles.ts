@@ -65,6 +65,10 @@ export const CardsContainer = styled('div', {
   overflow: 'overlay',
 
   animation: `${entranceAnimationVertical} 0.5s`,
+
+  '@media (max-width: 768px)': {
+    overflow: 'inherit',
+  },
 })
 
 export const FilterContainer = styled('div', {

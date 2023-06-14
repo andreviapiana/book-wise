@@ -45,13 +45,16 @@ export const CenterContainer = styled('div', {
 
   overflowY: 'overlay',
 
-  minWidth: '348px',
   width: '100%',
 
   animation: `${entranceAnimationVertical} 0.5s`,
 
   '@media (max-width: 1200px)': {
     marginBottom: '$16',
+  },
+
+  '@media (max-width: 768px)': {
+    padding: '0',
   },
 })
 
