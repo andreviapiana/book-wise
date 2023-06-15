@@ -30,6 +30,13 @@ export const Header = styled('header', {
   justifyContent: 'space-between',
 
   marginBottom: '$6',
+
+  '@media (max-width: 550px)': {
+    svg: {
+      width: 20,
+      height: 20,
+    },
+  },
 })
 
 export const User = styled('div', {
