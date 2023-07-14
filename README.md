@@ -29,7 +29,7 @@ ___
 ## 🎨 Layout
 A página em formato desktop é vista na imagem abaixo:
 
-![Capa](https://github.com/andreviapiana/test/assets/106932234/ba2621f2-3317-4d0f-9cfb-fefc87a13ca1)
+![BookWise Capa](https://github.com/andreviapiana/book-wise/assets/106932234/58b6cf8c-904d-436a-925e-f53b4127771f)
 
 ___
 
